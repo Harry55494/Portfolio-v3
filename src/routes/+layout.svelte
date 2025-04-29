@@ -6,11 +6,16 @@
 	let { children } = $props();
 </script>
 
-<Navbar/>
 
-{@render children()}
+<div class="max-w-[90vw] sm:max-w-[40vw] mx-auto">
 
-<Footer/>
+    <Navbar/>
+
+    {@render children()}
+
+    <Footer/>
+
+</div>
 
 
 <style>
