@@ -9,7 +9,7 @@
 
 <div class="flex justify-left align-middle left-0 top-0 right-0 m-auto align-content-center sm:h-16 h-24 sm:flex-row flex-col">
 
-    <a href="/" class="sm:w-[500px] w-full sm:mt-auto mt-6 sm:mb-auto mb-2 font-bold text-lg ">Harrison Phillingham</a>
+    <a href="/" class="sm:w-[500%] w-full sm:mt-auto mt-6 sm:mb-auto mb-2 font-bold text-lg">Harrison Phillingham</a>
 
     <div class="w-full"></div>
 
