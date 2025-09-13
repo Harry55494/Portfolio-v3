@@ -7,7 +7,7 @@
 </script>
 
 
-<div class="flex justify-left align-middle left-0 top-0 right-0 m-auto align-content-center w-full h-16 ">
+<div class="flex justify-left align-middle left-0 top-0 right-0 m-auto align-content-center w-full h-16 select-none">
 
     <a href="/" class="mt-auto mb-auto w-[100vw]"><p class="font-bold">Harrison Phillingham</p></a>
 

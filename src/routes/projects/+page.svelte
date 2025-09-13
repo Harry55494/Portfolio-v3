@@ -5,7 +5,7 @@
             name: 'pyCatan',
             description: 'A Python GUI implementation of the board game Catan. Aiming to take the AI knowledge learnt from Conquerors of Catan, and combine it with a GUI to get a full standalone app.',
             image: 'pyCatan_logo.png',
-            link: '/pycatan'
+            link: '/projects/pycatan'
         },
         conquerorsOfCatan: {
             name: 'Conquerors of Catan',
