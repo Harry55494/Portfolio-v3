@@ -7,7 +7,7 @@
 </script>
 
 
-<div class="max-w-[90vw] min-h-[78vh] sm:min-h-[91vh] sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto">
+<div class="max-w-[87vw] min-h-[78vh] sm:min-h-[91vh] mt-3 sm:mt-0 sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto">
 
     <Navbar/>
 
