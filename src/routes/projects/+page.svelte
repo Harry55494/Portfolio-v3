@@ -1,5 +1,8 @@
 
 <script>
+
+    import {ArrowUpRightFromSquareOutline} from "flowbite-svelte-icons";
+
     var projects = {
         pyCatan: {
             name: 'pyCatan',
@@ -47,7 +50,7 @@
                 <div class="flex items-center gap-4 items-start ">
                     <img src={project.image} alt={project.name} class="sm:mt-4 mt-2 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
                     <div class="flex flex-col mt-auto mb-auto">
-                        <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-1 sm:mt-0 mt-1">{project.name}</a>
+                        <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-1 sm:mt-0 mt-1 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
                         <p class="text-gray-600 sm:text-base text-[13px]">{project.description}</p>
                     </div>
                 </div>
