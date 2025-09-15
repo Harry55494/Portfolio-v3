@@ -46,11 +46,11 @@
 
     <ul class="ml-1">
         {#each projectsArray as project}
-            <li class="sm:mb-2 mb-5">
-                <div class="flex items-center gap-4 items-start ">
-                    <img src={project.image} alt={project.name} class="sm:mt-4 mt-2 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
-                    <div class="flex flex-col mt-auto mb-auto">
-                        <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-1 sm:mt-0 mt-1 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
+            <li class="sm:mb-7 mb-5">
+                <div class="flex gap-4 items-start ">
+                    <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
+                    <div class="flex flex-col">
+                        <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
                         <p class="text-gray-600 sm:text-base text-[13px]">{project.description}</p>
                     </div>
                 </div>
