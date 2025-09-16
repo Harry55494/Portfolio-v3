@@ -2,14 +2,32 @@
 <script>
 
     import {version_number} from "$lib/version_number.js";
+    import {MoonOutline} from "flowbite-svelte-icons";
+    import {SunOutline} from "flowbite-svelte-icons";
+    import {onMount} from "svelte";
+
+    import { initialSetTheme, changeTheme } from "./theme_functions";
+
+    onMount(() => {
+        initialSetTheme();
+    });
+
+
+
 </script>
 
-<div class="flex flex-col justify-center items-center content-center align-middle left-0 bottom-1 right-0 p-4 m-auto align-content-center select-none">
+<div class="flex flex-col justify-center items-center content-center align-middle left-0 bottom-1 right-0 p-4 m-auto align-content-center select-none sm:text-[13px] text-[12px]">
     <div class="flex">
-        <a href="https://github.com/Harry55494/portfolio-v3" target="_blank" class="text-sm flex items-center text-[12px]">
-            <img src="https://cdn.simpleicons.org/git" alt="git_logo" class="h-5 w-auto mr-2">
+        <a href="https://github.com/Harry55494/portfolio-v3" target="_blank" class="flex items-center dark:text-gray-50">
+            <img src="https://cdn.simpleicons.org/git" alt="git_logo" class="h-5 w-auto mr-2 m-auto">
             Source (v{version_number})
         </a>
+        <button class="hidden sm:flex flex-row" on:click={changeTheme} style="cursor: pointer; ">
+            <MoonOutline id="moon_icon" class="h-4 w-auto m-auto ml-4 hidden dark:text-gray-50" />
+            <SunOutline id="sun_icon" class="h-4 w-auto m-auto ml-4 hidden dark:text-gray-50" />
+        </button>
+
+
     </div>
-    <p class="mt-2 text-[12px]">© {new Date().getFullYear()} Harrison Phillingham</p>
+    <p class="mt-2 dark:text-gray-50">© {new Date().getFullYear()} Harrison Phillingham</p>
 </div>

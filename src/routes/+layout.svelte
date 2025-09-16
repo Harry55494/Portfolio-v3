@@ -2,12 +2,19 @@
 	import '../app.css';
     import Navbar from '$lib/navbar.svelte';
     import Footer from '$lib/footer.svelte';
+    import { onMount } from 'svelte';
 
 	let { children } = $props();
+
+    onMount(() => {
+        document.body.style.transition = 'background-color 0.8s ease, color 0.8s ease';
+    });
+
+
 </script>
 
 
-<div class="max-w-[90vw] min-h-[78vh] sm:min-h-[91vh] mt-3 sm:mt-0 sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto">
+<div class="max-w-[90vw] min-h-[88vh] sm:min-h-[91vh] mt-3 sm:mt-0 sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto">
 
     <Navbar/>
 
@@ -26,4 +33,18 @@
         background-color: #fdfdfd;
         overflow-x: hidden;
     }
+
+    :global(.dark body) {
+        background-color: #000000;
+    }
+
+    @media screen and (min-width: 480px){
+        :global(.dark body) {
+            background-color: #151519;
+        }
+    }
+
+
+
+
 </style>
