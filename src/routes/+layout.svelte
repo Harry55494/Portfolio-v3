@@ -30,7 +30,7 @@
 
 <style>
     :global(body) {
-        background-color: #fdfdfd;
+        background-color: #eae4d8;
         overflow-x: hidden;
     }
 

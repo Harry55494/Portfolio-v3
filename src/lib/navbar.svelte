@@ -17,7 +17,7 @@
 
 
     {#each links as link}
-        <a href={link.href} class="mt-auto mb-auto sm:mr-6 mr-4 hover:text-cyan-500 transition-colors duration-200 dark:text-gray-50">{link.name}</a>
+        <a href={link.href} class="mt-auto mb-auto sm:mr-6 mr-4 hover:text-blue-500 hover:underline transition-colors duration-200 dark:text-gray-50">{link.name}</a>
     {/each}
 
 

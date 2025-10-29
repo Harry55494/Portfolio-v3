@@ -7,10 +7,10 @@
 </script>
 
 <div class="flex justify-center">
-    <img src="header-image-full.png" alt="header" class="sm:mt-8 mt-10 h-auto w-full object-cover">
+    <img src="header-image-original.jpg" alt="header" class="sm:mt-8 mt-10 h-auto w-full object-cover">
 </div>
 
-<div class="sm:flex sm:justify-between"><p class="text-gray-600 dark:text-gray-100 mt-3">📍Beddgelert, Wales - August 2022</p> <p class="text-gray-600 sm:mt-3 mt-1 dark:text-gray-100">📷 Canon EOS RP 24-105mm + Filter</p> </div>
+<div class="sm:flex sm:justify-between text-gray-700"><p class=" dark:text-gray-100 mt-3">📍Beddgelert, Wales - August 2022</p> <p class=" sm:mt-3 mt-1 dark:text-gray-100">📷 Canon EOS RP 24-105mm</p> </div>
 
 <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Quick Links</h3>
 
