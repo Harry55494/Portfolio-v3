@@ -2,11 +2,10 @@
 <script>
 
     import {version_number} from "$lib/version_number.js";
-    import {MoonOutline} from "flowbite-svelte-icons";
-    import {SunOutline} from "flowbite-svelte-icons";
+    import {MoonOutline, SunOutline} from "flowbite-svelte-icons";
     import {onMount} from "svelte";
 
-    import { initialSetTheme, changeTheme } from "./theme_functions";
+    import {changeTheme, initialSetTheme} from "./theme_functions";
 
     onMount(() => {
         initialSetTheme();

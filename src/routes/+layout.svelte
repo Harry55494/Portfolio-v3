@@ -1,10 +1,10 @@
 <script>
-	import '../app.css';
+    import '../app.css';
     import Navbar from '$lib/navbar.svelte';
     import Footer from '$lib/footer.svelte';
-    import { onMount } from 'svelte';
+    import {onMount} from 'svelte';
 
-	let { children } = $props();
+    let { children } = $props();
 
     onMount(() => {
         document.body.style.transition = 'background-color 0.8s ease, color 0.8s ease';

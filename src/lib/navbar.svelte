@@ -1,11 +1,21 @@
 <script>
     import {changeTheme} from "$lib/theme_functions.js";
     import {MoonOutline, SunOutline} from "flowbite-svelte-icons";
+    import {onMount} from "svelte";
 
     const links = [
         { name: 'About', href: '/about' },
         { name: 'Projects', href: '/projects' }
     ];
+
+    let current_path = '';
+
+    onMount(() => {
+        current_path = document.location.pathname.toString().split('/')[1]
+    });
+
+
+
 </script>
 
 
@@ -17,7 +27,7 @@
 
 
     {#each links as link}
-        <a href={link.href} class="mt-auto mb-auto sm:mr-6 mr-4 hover:text-blue-500 hover:underline transition-colors duration-200 dark:text-gray-50">{link.name}</a>
+        <a href={link.href} class="mt-auto mb-auto sm:mr-6 mr-4 hover:text-blue-500 hover:underline transition-all duration-200 dark:text-gray-50">{link.name}</a>
     {/each}
 
 
