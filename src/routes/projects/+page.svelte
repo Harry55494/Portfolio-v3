@@ -28,13 +28,13 @@
     let extracted_data = Object.values({});
     const filter_and_sort_list = ["pyCatan", "Conquerors-of-Catan", "Portfolio-v3", "Hikers-Challenge", "Portfolio-v2"]
 
-    async function callServerGitHubRepos() {
+    async function getPublicGitHubRepos() {
         document.getElementById('arrow_icon').classList.remove('hidden')
         document.getElementById('refresh_icon').classList.add('hidden')
 
         extracted_data = Object.values({})
 
-        const response = await fetch('/projects', {
+        const response = await fetch('/data/github-repos', {
             method: 'GET',
         });
 
@@ -63,8 +63,19 @@
         document.getElementById('arrow_icon').classList.add('hidden')
     }
 
+    async function getGitHubActivity(){
+        const response = await fetch('/data/github-activity',
+            {method: 'GET',
+            });
+
+        const results = await response.json()
+
+        console.log(results)
+    }
+
     onMount(() => {
-        callServerGitHubRepos()
+        getPublicGitHubRepos()
+        getGitHubActivity()
     })
 
 
@@ -77,7 +88,7 @@
 <div class="m-auto">
     <div class="flex al">
         <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">Projects</h1>
-        <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={callServerGitHubRepos}>
+        <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={getPublicGitHubRepos}>
             <RefreshOutline id="refresh_icon" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
             <ArrowDownOutline id="arrow_icon" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
