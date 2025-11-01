@@ -55,7 +55,13 @@
             method: "GET",
         });
 
-        const results = await response.json();
+        const results = await response.json()
+
+        if (response.status !== 200){
+            document.getElementById('connection_error').innerText = `${document.getElementById('connection_error').innerText} HTTP Code: ${response.status}`
+            document.getElementById('connection_error').classList.remove('hidden');
+            return
+        }
 
         console.log(results.repos);
 
@@ -117,11 +123,13 @@
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
 
+    <p id='connection_error' class="hidden">Connection Error - Please try again later.</p>
+
 
     <ul class="ml-1">
         {#each extracted_data as project}
             <li class="sm:mb-7 mb-5">
-                <div class="flex gap-4 items-start ">
+                <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
                         <div class="h-auto sm:w-[80px] w-[60px] ">
                             <CodeOutline class="m-auto h-auto sm:w-[70px] w-[40px] border-2 border-gray-500 rounded-xl"></CodeOutline>
@@ -129,12 +137,12 @@
                     {:else}
                         <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
                     {/if}
-                    <div class="flex flex-col">
+                    <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
                             <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
-                            <div class="mr-5 flex flex-row items-center">
+                            <div class="sm:mr-5 m-1 flex flex-row items-center">
                                 <StarOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></StarOutline>
-                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.stars}</p>
+                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-1 text-center">{project.stars}</p>
                                 <!--<EyeOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></EyeOutline>
                                 <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.watchers}</p>-->
                             </div>
