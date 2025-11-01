@@ -4,12 +4,13 @@
         ArrowDownOutline,
         ArrowUpRightFromSquareOutline,
         CodeOutline,
-        GithubSolid,
+        EyeOutline,
         RefreshOutline,
+        StarOutline
     } from "flowbite-svelte-icons";
     import { onMount } from "svelte";
 
-    var projects_overwrites = {
+    const projects_overwrites = {
         pycatan: {
             description:
                 "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
@@ -36,7 +37,7 @@
     };
 
     let extracted_data = Object.values({});
-    const filter_and_sort_list = [
+    const filter_list = [
         "pyCatan",
         "Conquerors-of-Catan",
         "Portfolio-v3",
@@ -59,7 +60,7 @@
         console.log(results.repos);
 
         extracted_data = results.repos
-            .filter((repo) => filter_and_sort_list.includes(repo.name))
+            .filter((repo) => filter_list.includes(repo.name))
             .map((repo) => {
                 const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
                 const overwrite = projects_overwrites[overwriteKey];
@@ -73,11 +74,13 @@
                             repo.name +
                             "/refs/heads/master/icon.png",
                     link: overwrite?.link || repo.html_url,
+                    last_updated: repo.pushed_at,
+                    stars: repo.stargazers_count,
                 };
             })
             .sort((a, b) => {
-                const indexA = filter_and_sort_list.indexOf(a.name.replaceAll(" ", "-"));
-                const indexB = filter_and_sort_list.indexOf(b.name.replaceAll(" ", "-"));
+                const indexA = filter_list.indexOf(a.name.replaceAll(" ", "-"));
+                const indexB = filter_list.indexOf(b.name.replaceAll(" ", "-"));
                 return indexA - indexB;
             });
 
@@ -110,11 +113,9 @@
 
     </div>
 
-    <p class="mb-5 text-gray-900 sm:text-base text-[14px] ">Projects listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via <a href="https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28&versionId=free-pro-team%40latest&restPage=scripting-with-the-rest-api-and-javascript#list-repositories-for-a-user" class="underline">GitHub's API.</a> </p>
+    <p class="mb-5 text-gray-900 sm:text-base text-[14px] ">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API.</p>
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
-
-
 
 
     <ul class="ml-1">
@@ -129,7 +130,17 @@
                         <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
                     {/if}
                     <div class="flex flex-col">
-                        <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
+                        <div class="flex flex-flow justify-between ">
+                            <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{/if}</a>
+                            <div class="mr-5 flex flex-row items-center">
+                                <StarOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></StarOutline>
+                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.stars}</p>
+                                <!--<EyeOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></EyeOutline>
+                                <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.watchers}</p>-->
+                            </div>
+
+                        </div>
+
                         <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.description}</p>
                     </div>
                 </div>
