@@ -1,8 +1,8 @@
 <script>
     const quick_links = [
-        { name: 'About', href: '/about' },
-        { name: 'Homelab', href: '/about#homelab' },
-        { name: 'PyCatan', href: '/projects/pycatan', description: '' }
+        { name: "About", href: "/about" },
+        { name: "Homelab", href: "/about#homelab" },
+        { name: "PyCatan", href: "/projects/pycatan", description: "" },
     ];
 </script>
 

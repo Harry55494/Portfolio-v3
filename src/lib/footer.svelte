@@ -1,18 +1,14 @@
 
 <script>
+    import { MoonOutline, SunOutline } from "flowbite-svelte-icons";
+    import { onMount } from "svelte";
+    import { version_number } from "$lib/version_number.js";
 
-    import {version_number} from "$lib/version_number.js";
-    import {MoonOutline, SunOutline} from "flowbite-svelte-icons";
-    import {onMount} from "svelte";
-
-    import {changeTheme, initialSetTheme} from "./theme_functions";
+    import { changeTheme, initialSetTheme } from "./theme_functions";
 
     onMount(() => {
         initialSetTheme();
     });
-
-
-
 </script>
 
 <div class="flex flex-col justify-center items-center content-center align-middle left-0 bottom-1 right-0 p-4 m-auto align-content-center select-none sm:text-[13px] text-[12px]">

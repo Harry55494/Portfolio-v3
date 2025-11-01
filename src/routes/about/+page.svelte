@@ -1,9 +1,9 @@
 <script>
     const chapter_headings = {
-        "Work" : "work",
-        "Homelab" : "homelab",
-        "Tools/Setup" : "tools",
-    }
+        Work: "work",
+        Homelab: "homelab",
+        "Tools/Setup": "tools",
+    };
 </script>
 
 <div class="m-auto dark:text-gray-50">

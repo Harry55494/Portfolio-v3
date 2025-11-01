@@ -1,21 +1,18 @@
 <script>
-    import {changeTheme} from "$lib/theme_functions.js";
-    import {MoonOutline, SunOutline} from "flowbite-svelte-icons";
-    import {onMount} from "svelte";
+    import { MoonOutline, SunOutline } from "flowbite-svelte-icons";
+    import { onMount } from "svelte";
+    import { changeTheme } from "$lib/theme_functions.js";
 
     const links = [
-        { name: 'About', href: '/about' },
-        { name: 'Projects', href: '/projects' }
+        { name: "About", href: "/about" },
+        { name: "Projects", href: "/projects" },
     ];
 
-    let current_path = '';
+    let current_path = "";
 
     onMount(() => {
-        current_path = document.location.pathname.toString().split('/')[1]
+        current_path = document.location.pathname.toString().split("/")[1];
     });
-
-
-
 </script>
 
 

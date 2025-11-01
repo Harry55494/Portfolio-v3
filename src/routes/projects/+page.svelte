@@ -1,87 +1,102 @@
 
 <script>
-
-    import {ArrowUpRightFromSquareOutline, RefreshOutline, ArrowDownOutline, GithubSolid, CodeOutline} from "flowbite-svelte-icons";
-    import {onMount} from "svelte";
+    import {
+        ArrowDownOutline,
+        ArrowUpRightFromSquareOutline,
+        CodeOutline,
+        GithubSolid,
+        RefreshOutline,
+    } from "flowbite-svelte-icons";
+    import { onMount } from "svelte";
 
     var projects_overwrites = {
         pycatan: {
-            description: 'A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.',
-            link: '/projects/pycatan'
+            description:
+                "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
+            link: "/projects/pycatan",
         },
         conquerors_of_catan: {
-            description: 'Third Year Degree Solo Project, using the MiniMax algorithm to play The Settlers of Catan.',
-            link: '/projects/conquerors-of-catan'
+            description:
+                "Third Year Degree Solo Project, using the MiniMax algorithm to play The Settlers of Catan.",
+            link: "/projects/conquerors-of-catan",
         },
         hikers_challenge: {
-            description: 'Climb mountains and earn badges! A demo Android App created as part of an MSc Course.',
+            description:
+                "Climb mountains and earn badges! A demo Android App created as part of an MSc Course.",
         },
         portfolio_v3: {
-            description: 'Third version of a Portfolio, aiming for a simple markdown-inspired theme. Built using SvelteKit and Tailwind.',
+            description:
+                "Third version of a Portfolio, aiming for a simple markdown-inspired theme. Built using SvelteKit and Tailwind.",
         },
         portfolio_v2: {
-            description: 'Portfolio v2, built while at University using Svelte. Single page application.',
-            image: 'svelte-logo.png',
-        }
-    }
+            description:
+                "Portfolio v2, built while at University using Svelte. Single page application.",
+            image: "svelte-logo.png",
+        },
+    };
 
     let extracted_data = Object.values({});
-    const filter_and_sort_list = ["pyCatan", "Conquerors-of-Catan", "Portfolio-v3", "Hikers-Challenge", "Portfolio-v2"]
+    const filter_and_sort_list = [
+        "pyCatan",
+        "Conquerors-of-Catan",
+        "Portfolio-v3",
+        "Hikers-Challenge",
+        "Portfolio-v2",
+    ];
 
     async function getPublicGitHubRepos() {
-        document.getElementById('arrow_icon').classList.remove('hidden')
-        document.getElementById('refresh_icon').classList.add('hidden')
+        document.getElementById("arrow_icon").classList.remove("hidden");
+        document.getElementById("refresh_icon").classList.add("hidden");
 
-        extracted_data = Object.values({})
+        extracted_data = Object.values({});
 
-        const response = await fetch('/data/github-repos', {
-            method: 'GET',
+        const response = await fetch("/data/github-repos", {
+            method: "GET",
         });
 
-        const results = await response.json()
+        const results = await response.json();
 
-        console.log(results.repos)
+        console.log(results.repos);
 
-        extracted_data = results.repos.filter(repo => filter_and_sort_list.includes(repo.name)).map(repo => {
-            const overwriteKey = repo.name.toLowerCase().replace(/-/g, '_');
-            const overwrite = projects_overwrites[overwriteKey];
-            return {
-                name: repo.name.replaceAll('-', ' '),
-                description: overwrite?.description || repo.description?.split('[')[0] || '',
-                image: overwrite?.image || "https://raw.githubusercontent.com/Harry55494/" + repo.name + "/refs/heads/master/icon.png",
-                link: overwrite?.link || repo.html_url
-            };
-
-        }).sort((a, b) => {
-            const indexA = filter_and_sort_list.indexOf(a.name.replaceAll(' ', '-'));
-            const indexB = filter_and_sort_list.indexOf(b.name.replaceAll(' ', '-'));
-            return indexA - indexB;
-        })
-
-
-        document.getElementById('refresh_icon').classList.remove('hidden')
-        document.getElementById('arrow_icon').classList.add('hidden')
-    }
-
-    async function getGitHubActivity(){
-        const response = await fetch('/data/github-activity',
-            {method: 'GET',
+        extracted_data = results.repos
+            .filter((repo) => filter_and_sort_list.includes(repo.name))
+            .map((repo) => {
+                const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
+                const overwrite = projects_overwrites[overwriteKey];
+                return {
+                    name: repo.name.replaceAll("-", " "),
+                    description:
+                        overwrite?.description || repo.description?.split("[")[0] || "",
+                    image:
+                        overwrite?.image ||
+                        "https://raw.githubusercontent.com/Harry55494/" +
+                            repo.name +
+                            "/refs/heads/master/icon.png",
+                    link: overwrite?.link || repo.html_url,
+                };
+            })
+            .sort((a, b) => {
+                const indexA = filter_and_sort_list.indexOf(a.name.replaceAll(" ", "-"));
+                const indexB = filter_and_sort_list.indexOf(b.name.replaceAll(" ", "-"));
+                return indexA - indexB;
             });
 
-        const results = await response.json()
+        document.getElementById("refresh_icon").classList.remove("hidden");
+        document.getElementById("arrow_icon").classList.add("hidden");
+    }
 
-        console.log(results)
+    async function getGitHubActivity() {
+        const response = await fetch("/data/github-activity", { method: "GET" });
+
+        const results = await response.json();
+
+        console.log(results);
     }
 
     onMount(() => {
-        getPublicGitHubRepos()
-        getGitHubActivity()
-    })
-
-
-
-
-
+        getPublicGitHubRepos();
+        getGitHubActivity();
+    });
 </script>
 
 

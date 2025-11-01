@@ -8,14 +8,14 @@
 			if (isDark) {
 				document.documentElement.classList.add('dark');
 				document.addEventListener('DOMContentLoaded', () => {
-					document.querySelectorAll('#moon_icon').forEach(el => el.classList.add('hidden'));
-					document.querySelectorAll('#sun_icon').forEach(el => el.classList.remove('hidden'));
+					document.querySelectorAll('#moon_icon').forEach(el => {el.classList.add('hidden')});
+					document.querySelectorAll('#sun_icon').forEach(el => {el.classList.remove('hidden')});
 				});
 			} else {
 				document.documentElement.classList.remove('dark');
 				document.addEventListener('DOMContentLoaded', () => {
-					document.querySelectorAll('#sun_icon').forEach(el => el.classList.add('hidden'));
-					document.querySelectorAll('#moon_icon').forEach(el => el.classList.remove('hidden'));
+					document.querySelectorAll('#sun_icon').forEach(el => {el.classList.add('hidden')});
+					document.querySelectorAll('#moon_icon').forEach(el => {el.classList.remove('hidden')});
 				});
 			}
 		} catch (e) {}

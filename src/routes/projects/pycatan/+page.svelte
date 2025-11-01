@@ -1,9 +1,7 @@
 <script>
-
     const external_links = [
-        {title: "GitHub", ref: "https://github.com/harry55494/pyCatan"}
-    ]
-
+        { title: "GitHub", ref: "https://github.com/harry55494/pyCatan" },
+    ];
 </script>
 <div>
     <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">pyCatan</h1>
