@@ -2,7 +2,9 @@
 <script>
     import {
         ArrowDownOutline,
+        ArrowRightOutline,
         ArrowUpRightFromSquareOutline,
+        CodeBranchOutline,
         CodeOutline,
         EyeOutline,
         RefreshOutline,
@@ -36,7 +38,8 @@
         },
     };
 
-    let extracted_data = Object.values({});
+    let extracted_repo_data = Object.values({});
+    let extracted_activity_data = Object.values({});
     const filter_list = [
         "pyCatan",
         "Conquerors-of-Catan",
@@ -46,10 +49,10 @@
     ];
 
     async function getPublicGitHubRepos() {
-        document.getElementById("arrow_icon").classList.remove("hidden");
-        document.getElementById("refresh_icon").classList.add("hidden");
+        document.getElementById("arrow_icon_projects").classList.remove("hidden");
+        document.getElementById("refresh_icon_projects").classList.add("hidden");
 
-        extracted_data = Object.values({});
+        extracted_repo_data = Object.values({});
 
         const response = await fetch("/data/github-repos", {
             method: "GET",
@@ -65,7 +68,7 @@
 
         console.log(results.repos);
 
-        extracted_data = results.repos
+        extracted_repo_data = results.repos
             .filter((repo) => filter_list.includes(repo.name))
             .map((repo) => {
                 const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
@@ -90,16 +93,69 @@
                 return indexA - indexB;
             });
 
-        document.getElementById("refresh_icon").classList.remove("hidden");
-        document.getElementById("arrow_icon").classList.add("hidden");
+        document.getElementById("refresh_icon_projects").classList.remove("hidden");
+        document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
 
     async function getGitHubActivity() {
-        const response = await fetch("/data/github-activity", { method: "GET" });
 
+        document.getElementById("arrow_icon_activity").classList.remove("hidden");
+        document.getElementById("refresh_icon_activity").classList.add("hidden");
+
+        extracted_activity_data = Object.values({});
+
+        const response = await fetch("/data/github-activity", { method: "GET" });
         const results = await response.json();
 
-        console.log(results);
+        const date_object = new Date()
+        const month = String(date_object.getMonth() + 1).padStart(2, "0");
+        const date = String(date_object.getDate()).padStart(2, "0");
+        const compare_date = `${date_object.getFullYear()}-${month}-${date}`
+
+        extracted_activity_data = results.repos.map((repo) => {
+
+            const icon = (() => {
+                switch (repo.type) {
+                    case 'PushEvent': return ArrowRightOutline;
+                    case 'CreateEvent': return CodeBranchOutline;
+                    case 'WatchEvent': return EyeOutline
+                    default: return CodeBranchOutline;
+                }
+
+            })();
+
+            const display_time = (() => {
+                if (repo.created_at.split('T')[0] === compare_date) {
+                    return repo.created_at.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
+                } else  {
+                    return repo.created_at.split('T')[0].split('-').reverse().join('/')
+                }
+            })();
+
+            const repo_name = repo.repo.name.replace('Harry55494/', '')
+
+            const description = (() => {
+                switch (repo.type) {
+                    case 'PushEvent': return `Pushed to ${repo_name}`
+                    case 'WatchEvent': return `Watched ${repo_name}`
+                    case 'CreateEvent': return `Created Branch '${repo.payload.ref}' in ${repo_name}`
+                    default: return "An Event Happened"
+                }
+            })();
+
+            return {
+                event: repo.type.replace('Event', ''),
+                sort_time: repo.created_at,
+                display_time,
+                repository: repo_name,
+                description,
+                icon
+
+            };
+        }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time));
+
+        document.getElementById("refresh_icon_activity").classList.remove("hidden");
+        document.getElementById("arrow_icon_activity").classList.add("hidden");
     }
 
     onMount(() => {
@@ -110,11 +166,11 @@
 
 
 <div class="m-auto">
-    <div class="flex al">
+    <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">Projects</h1>
         <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={getPublicGitHubRepos}>
-            <RefreshOutline id="refresh_icon" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
-            <ArrowDownOutline id="arrow_icon" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+            <RefreshOutline id="refresh_icon_projects" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
+            <ArrowDownOutline id="arrow_icon_projects" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
 
     </div>
@@ -127,7 +183,7 @@
 
 
     <ul class="ml-1">
-        {#each extracted_data as project}
+        {#each extracted_repo_data as project}
             <li class="sm:mb-7 mb-5">
                 <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
@@ -152,6 +208,38 @@
                         <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.description}</p>
                     </div>
                 </div>
+            </li>
+        {/each}
+    </ul>
+
+    <hr class="w-full m-auto dark:text-gray-100 mb-5" />
+
+    <div class="flex">
+        <h1 class="text-3xl font-bold mt-5 mb-7 dark:text-gray-50">Recent Activity</h1>
+        <button type="button" class="mt-auto mb-auto ml-2 hover:cursor-pointer" on:click={getGitHubActivity()}>
+            <RefreshOutline id="refresh_icon_activity" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
+            <ArrowDownOutline id="arrow_icon_activity" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+        </button>
+
+    </div>
+
+    <ul class="ml-1 mb-5 sm:mb-12">
+        {#each extracted_activity_data as activity}
+            <li class="sm:mb-5 mb-2">
+                <div class="flex gap-2 items-start w-full">
+                    <svelte:component this={activity.icon} class="sm:w-8 w-6 h-auto dark:text-gray-50 text-gray-900 "/>
+                    <div class="flex flex-col w-full">
+                        <div class="flex flex-flow justify-between ">
+                            <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
+                            <div class="sm:mr-5 m-1 flex flex-row items-center">
+                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100 ">{activity.display_time}</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </li>
         {/each}
     </ul>
