@@ -16,9 +16,9 @@
 <div class="m-auto dark:text-gray-50">
     <h1 class="text-3xl font-bold mt-5 mb-4 dark:text-gray-50">About</h1>
 
-    <p>Hey! My name's Harrison and I work in Digital Forensics for Thames Valley Police.</p>
+    <p class="ml-0.5">Hey! My name's Harrison and I work in Digital Forensics for Thames Valley Police.</p>
 
-    <p class="mt-2">I'm a big believer in self-hosting, privacy, the power of open-source, and the idea that no problem can't be fixed without enough time and if/else statements.</p>
+    <p class="mt-2 ml-0.5">I'm a big believer in self-hosting, privacy, the power of open-source, and the idea that no problem can't be fixed without enough time and if/else statements.</p>
 
     <hr class="w-[60%] sm:w-[50%] mt-5 mb-4 border-gray-500">
 
@@ -32,17 +32,17 @@
 
     <h3 id="work" class="text-2xl font-bold mt-8 mb-4">Work</h3>
 
-    <p class="mt-2">I currently work for Thames Valley Police in the Digital Forensics department.</p>
+    <p class="mt-2 ml-0.5">I currently work for Thames Valley Police in the Digital Forensics department.</p>
 
-    <p class="mt-2">Outside of working for Thames Valley Police, I also work part-time for Daylight CPT, providing Microsoft 365 support, device management, and various other technical services.</p>
+    <p class="mt-2 ml-0.5">Outside of working for Thames Valley Police, I also work part-time for Daylight CPT, providing Microsoft 365 support, device management, and various other technical services.</p>
 
-    <p class="mt-2">When not working, I'm usually programming (see my projects <a class="underline text-blue-500" href="/projects">here</a>) or tinkering with something (see below!).</p>
+    <p class="mt-2 ml-0.5">When not working, I'm usually programming (see my projects <a class="underline text-blue-500" href="/projects">here</a>) or tinkering with something (see below!).</p>
 
     <h3 id="homelab" class="text-2xl font-bold mt-8 mb-4">Homelab</h3>
 
-    <p class="mt-2">I'm a big believer in the power of open-source, self-hosting, and decreasing reliance on the cloud. I run a multi-site Homelab, which provides a lot of the services I use everyday. The underlying foundation of this is 2x Proxmox-VE servers, with a virtualised TrueNAS system, and Tailscale to join everything together. Some of the services I run include:</p>
+    <p class="mt-2 ml-0.5">I'm a big believer in the power of open-source, self-hosting, and decreasing reliance on the cloud. I run a multi-site Homelab, which provides a lot of the services I use everyday. The underlying foundation of this is 2x Proxmox-VE servers, with a virtualised TrueNAS system, and Tailscale to join everything together. Some of the services I run include:</p>
 
-    <ul class="list-disc list-inside ml-5 mt-4">
+    <ul class="list-disc sm:list-inside sm:ml-5 ml-4 mt-4">
         <li>Nextcloud</li>
         <li>Paperless</li>
         <li>Immich</li>
@@ -54,9 +54,9 @@
 
     <h3 id="tools" class="text-2xl font-bold mt-8 mb-4">Tools/Setup</h3>
 
-    <p class="mt-2">I love to play around with different tools, all in the over-optimistic aim to get the perfect/most efficient setup. As of writing (Nov 2025) I have settled on the following:</p>
+    <p class="mt-2 ml-0.5">I love to play around with different tools, all in the over-optimistic aim to get the perfect/most efficient setup. As of writing (Nov 2025) I have settled on the following:</p>
 
-    <ul class="list-disc sm:list-inside sm:ml-5 ml-3 mt-4">
+    <ul class="list-disc sm:list-inside sm:ml-5 ml-4 mt-4">
         <li><strong>MacOS / Fedora Linux</strong>. One for productivity + stability, one for games + tinkering.</li>
         <li><strong>Firefox / Thunderbird</strong> - Browser/Email Clients. Great open source tools that don't harvest data.</li>
         <li><strong>Obsidian</strong> - Note taking. Big believer in the power of Markdown and keeping things simple, hence Obsidian is a great choice.</li>
@@ -65,7 +65,7 @@
 
     <h3 id="external" class="text-2xl font-bold mt-8 mb-4">External Links</h3>
 
-    <ul class="flex flex-col gap-1 list-disc list-inside">
+    <ul class="flex flex-col gap-1 list-disc list-inside ml-1">
         {#each Object.entries(external_links) as [heading, id]}
             <li><a class="underline text-blue-500 " href={id} target="_blank">{heading}</a></li>
         {/each}

@@ -150,7 +150,7 @@
                 icon
 
             };
-        }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time));
+        }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time))
 
         await new Promise((resolve) => {
             setTimeout(resolve, 150);
@@ -168,7 +168,7 @@
 </script>
 
 
-<div class="m-auto">
+<div class="m-auto dark:text-gray-50">
     <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">Projects</h1>
         <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={getPublicGitHubRepos}>
@@ -178,7 +178,7 @@
 
     </div>
 
-    <p class="mb-5 text-gray-900 sm:text-base text-[14px] ">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 5 minutes. </p>
+    <p class="mb-5 ml-0.5 text-gray-900 sm:text-base text-[14px] dark:text-gray-50">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 5 minutes. </p>
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
 
@@ -208,7 +208,7 @@
 
                         </div>
 
-                        <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.description}</p>
+                        <p class="text-gray-900 sm:text-base text-[14px] dark:text-gray-100">{project.description}</p>
                     </div>
                 </div>
             </li>
@@ -235,7 +235,7 @@
                         <div class="flex flex-flow justify-between ">
                             <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
                             <div class="sm:mr-5 m-1 flex flex-row items-center">
-                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100 ">{activity.display_time}</p>
+                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[14px] dark:text-gray-100 ">{activity.display_time}</p>
                             </div>
                         </div>
 
