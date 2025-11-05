@@ -2,8 +2,8 @@
     import {onMount} from "svelte";
     import {checkAndFetchData} from "$lib/data_functions.js"
 
-    const quick_links = [
-        { name: "About", href: "/about" },
+    let quick_links = [
+        { name: "About", href: "/about"},
         { name: "Homelab", href: "/about#homelab" },
         { name: "PyCatan", href: "/projects/pycatan", description: "" },
     ];
@@ -14,6 +14,14 @@
     }
 
     onMount(async () => {
+
+        const already_visited = localStorage.getItem("ALREADY_VISITED");
+
+        if (!already_visited) {
+            quick_links[0].description = "<-- Start Here"
+            localStorage.setItem("ALREADY_VISITED", true)
+        }
+
         await prefetchData()
     })
 
@@ -29,6 +37,6 @@
 
 <ul class="flex flex-col gap-1 list-disc list-inside justify-between dark:text-gray-100">
     {#each quick_links as link}
-        <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.description} &nbsp;- {link.description}{/if}</li>
+        <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.description} &nbsp; {link.description}{/if}</li>
     {/each}
 </ul>
