@@ -1,9 +1,22 @@
 <script>
+    import {onMount} from "svelte";
+    import {checkAndFetchData} from "$lib/data_functions.js"
+
     const quick_links = [
         { name: "About", href: "/about" },
         { name: "Homelab", href: "/about#homelab" },
         { name: "PyCatan", href: "/projects/pycatan", description: "" },
     ];
+
+    async function prefetchData(){
+        await checkAndFetchData("REPO_DATA_CACHE", "/data/github-repos")
+        await checkAndFetchData("ACTIVIY_DATA_CACHE", "/data/github-activity")
+    }
+
+    onMount(async () => {
+        await prefetchData()
+    })
+
 </script>
 
 <div class="flex justify-center">

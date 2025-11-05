@@ -11,6 +11,7 @@
         StarOutline
     } from "flowbite-svelte-icons";
     import { onMount } from "svelte";
+    import {cacheData, checkAndFetchData } from "$lib/data_functions.js";
 
     const projects_overwrites = {
         pycatan: {
@@ -48,27 +49,17 @@
         "Portfolio-v2",
     ];
 
+
+
     async function getPublicGitHubRepos() {
         document.getElementById("arrow_icon_projects").classList.remove("hidden");
         document.getElementById("refresh_icon_projects").classList.add("hidden");
 
         extracted_repo_data = Object.values({});
 
-        const response = await fetch("/data/github-repos", {
-            method: "GET",
-        });
+        const data = await checkAndFetchData("REPO_DATA_CACHE", "/data/github-repos")
 
-        const results = await response.json()
-
-        if (response.status !== 200){
-            document.getElementById('connection_error').innerText = `${document.getElementById('connection_error').innerText} HTTP Code: ${response.status}`
-            document.getElementById('connection_error').classList.remove('hidden');
-            return
-        }
-
-        console.log(results.repos);
-
-        extracted_repo_data = results.repos
+        extracted_repo_data = data.repos
             .filter((repo) => filter_list.includes(repo.name))
             .map((repo) => {
                 const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
@@ -93,6 +84,10 @@
                 return indexA - indexB;
             });
 
+        await new Promise((resolve) => {
+            setTimeout(resolve, 150);
+        });
+
         document.getElementById("refresh_icon_projects").classList.remove("hidden");
         document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
@@ -104,21 +99,23 @@
 
         extracted_activity_data = Object.values({});
 
-        const response = await fetch("/data/github-activity", { method: "GET" });
-        const results = await response.json();
+        const data = await checkAndFetchData("ACTIVIY_DATA_CACHE", "/data/github-activity")
+
+        console.log(data)
 
         const date_object = new Date()
         const month = String(date_object.getMonth() + 1).padStart(2, "0");
         const date = String(date_object.getDate()).padStart(2, "0");
         const compare_date = `${date_object.getFullYear()}-${month}-${date}`
 
-        extracted_activity_data = results.repos.map((repo) => {
+        extracted_activity_data = data.repos.map((repo) => {
 
             const icon = (() => {
                 switch (repo.type) {
                     case 'PushEvent': return ArrowRightOutline;
                     case 'CreateEvent': return CodeBranchOutline;
                     case 'WatchEvent': return EyeOutline
+                    case 'PullRequestEvent': return CodeBranchOutline
                     default: return CodeBranchOutline;
                 }
 
@@ -139,6 +136,7 @@
                     case 'PushEvent': return `Pushed to ${repo_name}`
                     case 'WatchEvent': return `Watched ${repo_name}`
                     case 'CreateEvent': return `Created Branch '${repo.payload.ref}' in ${repo_name}`
+                    case 'PullRequestEvent': return `Created Pull Request #${repo.payload.number} in ${repo_name}`
                     default: return "An Event Happened"
                 }
             })();
@@ -154,6 +152,10 @@
             };
         }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time));
 
+        await new Promise((resolve) => {
+            setTimeout(resolve, 150);
+        });
+
         document.getElementById("refresh_icon_activity").classList.remove("hidden");
         document.getElementById("arrow_icon_activity").classList.add("hidden");
     }
@@ -162,6 +164,7 @@
         getPublicGitHubRepos();
         getGitHubActivity();
     });
+
 </script>
 
 
@@ -175,7 +178,7 @@
 
     </div>
 
-    <p class="mb-5 text-gray-900 sm:text-base text-[14px] ">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API.</p>
+    <p class="mb-5 text-gray-900 sm:text-base text-[14px] ">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 5 minutes. </p>
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
 
