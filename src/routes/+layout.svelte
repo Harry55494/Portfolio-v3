@@ -13,7 +13,7 @@
 </script>
 
 
-<div class="max-w-[90vw] min-h-[88vh] sm:min-h-[91vh] mt-3 sm:mt-0 sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto">
+<div class="max-w-[90vw] min-h-[80vh] sm:min-h-[88vh] mt-3 sm:mt-0 sm:max-w-[60vw] md:max-w-[60vw] lg:max-w-[50vw] xl:max-w-[40vw]  mx-auto mb-5">
 
     <Navbar/>
 
