@@ -1,6 +1,7 @@
 
 <script>
     import {
+        AlignLeftOutline,
         ArrowDownOutline,
         ArrowRightOutline,
         ArrowUpRightFromSquareOutline,
@@ -116,6 +117,7 @@
                     case 'CreateEvent': return CodeBranchOutline;
                     case 'WatchEvent': return EyeOutline
                     case 'PullRequestEvent': return CodeBranchOutline
+                    case 'IssueCommentEvent': return AlignLeftOutline
                     default: return CodeBranchOutline;
                 }
 
@@ -137,6 +139,7 @@
                     case 'WatchEvent': return `Watched ${repo_name}`
                     case 'CreateEvent': return `Created Branch '${repo.payload.ref}' in ${repo_name}`
                     case 'PullRequestEvent': return `Created Pull Request #${repo.payload.number} in ${repo_name}`
+                    case 'IssueCommentEvent': return `Commented on issue #${repo.payload.issue.number} in ${repo_name}`
                     default: return "An Event Happened"
                 }
             })();
