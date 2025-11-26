@@ -14,3 +14,9 @@
 </ul>
 
 <hr class="w-[60%] sm:w-[50%] mt-4 mb-4 border-gray-500">
+
+<p class="mt-2 ml-0.5 dark:text-gray-50">pyCatan is the continuation of the Conquerors of Catan Project, aimed at integrating a true GUI to the core AI part of the program. The main limitation of Conquerors of Catan was that it only ever had a CLI Interface, which for a complex board game is never ideal. This aims to create a new UI to play with.</p>
+
+<div class="mt-8"></div>
+
+<p class="mt-2 ml-0.5 dark:text-gray-50">Current progress can be viewed at the GitHub link above.</p>

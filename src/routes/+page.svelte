@@ -5,7 +5,7 @@
     let quick_links = [
         { name: "About", href: "/about"},
         { name: "Homelab", href: "/about#homelab" },
-        { name: "PyCatan", href: "/projects/pycatan", description: "" },
+        { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", description: "" },
     ];
 
     async function prefetchData(){
