@@ -1,6 +1,6 @@
 
 <script>
-    import { MoonOutline, SunOutline } from "flowbite-svelte-icons";
+    import { LockOutline, MoonOutline, SunOutline } from "flowbite-svelte-icons";
     import { onMount } from "svelte";
     import { version_number } from "$lib/version_number.js";
 
@@ -24,5 +24,12 @@
 
 
     </div>
-    <p class="mt-2 dark:text-gray-50">© {new Date().getFullYear()} Harrison Phillingham</p>
+    <div class="flex flex-col justify-center items-center content-center align-middle ">
+        <p class="mt-2 dark:text-gray-50">© {new Date().getFullYear()} Harrison Phillingham</p>
+        <div class="flex items-center mt-2">
+            <LockOutline class="h-4 w-auto dark:text-gray-50" />
+            <a href="/gpg" class="ml-1 dark:text-gray-50">GPG Key</a>
+        </div>
+    </div>
+
 </div>

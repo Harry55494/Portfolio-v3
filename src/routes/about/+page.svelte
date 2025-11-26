@@ -8,7 +8,8 @@
 
     const external_links = {
         LinkedIn: "https://www.linkedin.com/in/harrison-phillingham/",
-        GitHub: "https://github.com/harry55494"
+        GitHub: "https://github.com/harry55494",
+        "GPG Key (OpenPGP)": "https://keys.openpgp.org/search?q=harrison%40phillingham.com"
     }
 
 </script>
@@ -63,7 +64,7 @@
         <li><strong>JetBrains suite</strong> - Code Editor. Once described to me by a friend as the crack cocaine of IDEs, aka very addictive.</li>
     </ul>
 
-    <h3 id="external" class="text-2xl font-bold mt-8 mb-4">External Links</h3>
+    <h3 id="external" class="text-2xl font-bold mt-8 mb-4">Links</h3>
 
     <ul class="flex flex-col gap-1 list-disc list-inside ml-1">
         {#each Object.entries(external_links) as [heading, id]}
