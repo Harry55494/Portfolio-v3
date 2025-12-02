@@ -1,13 +1,16 @@
 {
 	"name": "portfolio-v3",
 	"private": true,
-	"version": "0.1.0",
+	"version": "0.3.3",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
+		"prepare": "svelte-kit sync || echo ''",
+		"sync-version": "node scripts/sync-version.js",
+		"prebuild": "npm run sync-version",
+		"release": "node scripts/release.js"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.2",
