@@ -28,7 +28,7 @@
         <p class="mt-2 dark:text-gray-50">© {new Date().getFullYear()} Harrison Phillingham</p>
         <div class="flex items-center mt-2">
             <LockOutline class="h-4 w-auto dark:text-gray-50" />
-            <a href="/gpg" class="ml-1 dark:text-gray-50">GPG Key</a>
+            <a href="/openpgp" class="ml-1 dark:text-gray-50">OpenPGP Key</a>
         </div>
     </div>
 

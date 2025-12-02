@@ -9,7 +9,7 @@
     const external_links = {
         LinkedIn: "https://www.linkedin.com/in/harrison-phillingham/",
         GitHub: "https://github.com/harry55494",
-        "GPG Key (OpenPGP)": "https://keys.openpgp.org/search?q=harrison%40phillingham.com"
+        "OpenPGP Key": "https://keys.openpgp.org/search?q=harrison%40phillingham.com"
     }
 
 </script>
