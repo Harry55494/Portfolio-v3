@@ -10,8 +10,12 @@
         return await response.json()
     }
 
+    let email = '';
+
     onMount(async () => {
         const data = await getEmail();
+        email = "mailto:" + data.email;
+
     })
 
 </script>
@@ -27,9 +31,9 @@
 
 <hr class="w-[60%] sm:w-[50%] mt-4 mb-4 border-gray-500">
 
-<p class="mt-2 ml-0.5">Conquerors of Catan was a degree 'capstone' project, aimed at creating an AI player for the classic euro-style board game The Settlers of Catan (aka Catan). The challenge comes from Catan having imperfect information (private cards), random chance (dice roles and card draws), and player interaction (trading).</p>
-<p class="mt-2 ml-0.5">Conquerors of Catan comes up with innovative methods to deal with these challenge, resulting in a strong Human-competitive player.</p>
+<p class="mt-2 ml-0.5 dark:text-gray-50">Conquerors of Catan was a degree 'capstone' project, aimed at creating an AI player for the classic euro-style board game The Settlers of Catan (aka Catan). The challenge comes from Catan having imperfect information (private cards), random chance (dice roles and card draws), and player interaction (trading).</p>
+<p class="mt-2 ml-0.5 dark:text-gray-50">Conquerors of Catan comes up with innovative methods to deal with these challenge, resulting in a strong Human-competitive player.</p>
 
 <div class="mt-8"></div>
 
-<p class="mt-2 ml-0.5">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href=""> email</a>. The code is also available at GitHub as above.</p>
+<p class="mt-2 ml-0.5 dark:text-gray-50">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href="{email}"> email</a>. The code is also available at GitHub as above.</p>

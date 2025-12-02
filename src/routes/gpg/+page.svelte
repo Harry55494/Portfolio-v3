@@ -1,4 +1,18 @@
 <script>
+    import {onMount} from "svelte";
+
+    async function getEmail(){
+        const response = await fetch("/data/email", { method: "GET" });
+        return await response.json()
+    }
+
+    let email = '';
+
+    onMount(async () => {
+        const data = await getEmail();
+        email = data.email;
+
+    })
 
 </script>
 <div class="text-[14px] dark:text-gray-50 pt-4 pb-8 ">
@@ -10,7 +24,7 @@
     </p>
 
     <p class="mb-4">
-        <strong>Email:</strong> harrison@phillingham.com
+        <strong>Email:</strong> {email}
     </p>
 
     <div class="mb-6">
