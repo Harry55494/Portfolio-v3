@@ -15,8 +15,8 @@ export async function cacheData(CACHE_KEY, ENDPOINT) {
 	return data;
 }
 
-export async function checkAndFetchData(CACHE_KEY, ENDPOINT) {
-	const CACHE_DURATION = 5 * 60 * 1000;
+export async function checkAndFetchData(CACHE_KEY, ENDPOINT, ARGS = {}) {
+	const CACHE_DURATION = 15 * 60 * 1000;
 
 	const cached = localStorage.getItem(CACHE_KEY);
 	let data;

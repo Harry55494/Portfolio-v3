@@ -2,16 +2,17 @@ import { json } from "@sveltejs/kit";
 import { Octokit } from "octokit";
 import { GITHUB_API_TOKEN } from "$env/static/private";
 
-export async function GET() {
+export async function GET({ url }) {
 	const octokit = new Octokit({
 		auth: GITHUB_API_TOKEN,
 	});
 
+	const repo = url.searchParams.get("repo");
+
 	const response = await octokit.request(
-		"GET /users/{username}/events/public",
+		`GET /repos/{username}/${repo}/commits`,
 		{
 			username: "harry55494",
-			per_page: 50,
 			headers: {
 				"X-GitHub-Api-Version": "2022-11-28",
 				Accept: "application/vnd.github+json",
@@ -20,6 +21,6 @@ export async function GET() {
 	);
 
 	return json({
-		repos: response.data,
+		commits: response.data,
 	});
 }

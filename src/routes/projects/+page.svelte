@@ -50,7 +50,6 @@
     ];
 
 
-
     async function getPublicGitHubRepos() {
         document.getElementById("arrow_icon_projects").classList.remove("hidden");
         document.getElementById("refresh_icon_projects").classList.add("hidden");
@@ -92,6 +91,26 @@
         document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
 
+    function getDisplayDate(string){
+
+        const date_object = new Date()
+        const month = String(date_object.getMonth() + 1).padStart(2, "0");
+        const date = String(date_object.getDate()).padStart(2, "0");
+        const compare_date = `${date_object.getFullYear()}-${month}-${date}`
+
+        let display_time;
+        display_time = (() => {
+            if (string.split('T')[0] === compare_date) {
+                return string.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
+            } else  {
+                return string.split('T')[0].split('-').reverse().join('/')
+            }
+        })();
+
+        return display_time
+
+    }
+
     async function getGitHubActivity() {
 
         document.getElementById("arrow_icon_activity").classList.remove("hidden");
@@ -101,33 +120,7 @@
 
         const data = await checkAndFetchData("ACTIVIY_DATA_CACHE", "/data/github-activity")
 
-        console.log(data)
-
-        const date_object = new Date()
-        const month = String(date_object.getMonth() + 1).padStart(2, "0");
-        const date = String(date_object.getDate()).padStart(2, "0");
-        const compare_date = `${date_object.getFullYear()}-${month}-${date}`
-
-        extracted_activity_data = data.repos.map((repo) => {
-
-            const icon = (() => {
-                switch (repo.type) {
-                    case 'PushEvent': return ArrowRightOutline;
-                    case 'CreateEvent': return CodeBranchOutline;
-                    case 'WatchEvent': return EyeOutline
-                    case 'PullRequestEvent': return CodeBranchOutline
-                    default: return CodeBranchOutline;
-                }
-
-            })();
-
-            const display_time = (() => {
-                if (repo.created_at.split('T')[0] === compare_date) {
-                    return repo.created_at.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
-                } else  {
-                    return repo.created_at.split('T')[0].split('-').reverse().join('/')
-                }
-            })();
+        extracted_activity_data = data.repos.filter((repo) => repo.type !== 'PushEvent').map((repo) => {
 
             const repo_name = repo.repo.name.replace('Harry55494/', '')
 
@@ -141,16 +134,35 @@
                 }
             })();
 
+
+            const icon = (() => {
+                switch (repo.type) {
+                    case 'PushEvent': return ArrowRightOutline;
+                    case 'CreateEvent': return CodeBranchOutline;
+                    case 'WatchEvent': return EyeOutline
+                    case 'PullRequestEvent': return CodeBranchOutline
+                    default: return CodeBranchOutline;
+                }
+
+            })();
+
             return {
                 event: repo.type.replace('Event', ''),
                 sort_time: repo.created_at,
-                display_time,
+                display_time: getDisplayDate(repo.created_at),
                 repository: repo_name,
                 description,
-                icon
+                icon,
+                verified: false
 
             };
-        }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time))
+        })
+
+
+        const git_commit_data = await(getCommitsForRepos())
+        extracted_activity_data = [...extracted_activity_data, ...git_commit_data].sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time)).slice(0, 10);
+
+        console.log(extracted_activity_data)
 
         await new Promise((resolve) => {
             setTimeout(resolve, 150);
@@ -160,9 +172,48 @@
         document.getElementById("arrow_icon_activity").classList.add("hidden");
     }
 
+    async function getCommitsForRepos() {
+        const commit_activity = [];
+
+        for (const repo of filter_list) {
+            const repo_target = repo.toLowerCase();
+
+            try {
+                const response = await fetch(`/data/github-commits?repo=${repo_target}`, { method: "GET" });
+
+                if (!response.ok) {
+                    console.warn(`Failed to fetch commits for ${repo_target}`);
+                    continue;
+                }
+
+                const data = await response.json();
+
+                console.log(data)
+
+                const repo_commits = data.commits.map((commit) => ({
+                    event: 'commit',
+                    sort_time: commit.commit.committer.date,
+                    display_time: getDisplayDate(commit.commit.committer.date),
+                    repository: repo_target,
+                    description: commit.commit.message,
+                    icon: ArrowRightOutline,
+                    verified: commit.commit.verification.verified,
+
+                }));
+
+                commit_activity.push(...repo_commits);
+            } catch (error) {
+                console.error(`Error fetching commits for ${repo_target}:`, error);
+            }
+        }
+
+        return commit_activity;
+    }
+
     onMount(() => {
         getPublicGitHubRepos();
         getGitHubActivity();
+
     });
 
 </script>
@@ -178,7 +229,7 @@
 
     </div>
 
-    <p class="mb-5 ml-0.5 text-gray-900 sm:text-base text-[14px] dark:text-gray-50">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 5 minutes. </p>
+    <p class="mb-5 ml-0.5 text-gray-900 sm:text-base text-[14px] dark:text-gray-50">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 15 minutes. </p>
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
 

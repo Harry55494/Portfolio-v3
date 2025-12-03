@@ -47,7 +47,7 @@
             When I send an email, I 'sign' it with my private key (which only I have). The recipient can then verify that the email received is really from me using my public key (shown below). This proves that the message is authentic, and has not been modified.
         </p>
         <p>
-            OpenPGP can also be used to encrypt sensitive messages so only the intended recipient can read them, provided both people have a key set.
+            OpenPGP can also be used to encrypt sensitive messages so only the intended recipient can read them. For this, both people need their own OpenPGP keys.
         </p>
 
     </div>
