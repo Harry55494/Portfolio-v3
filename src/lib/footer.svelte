@@ -17,7 +17,7 @@
             <img src="https://cdn.simpleicons.org/git" alt="git_logo" class="h-5 w-auto mr-2 m-auto">
             Source (v{version_number})
         </a>
-        <button class="hidden sm:flex flex-row" on:click={changeTheme} style="cursor: pointer; ">
+        <button class="hidden sm:flex flex-row" onclick={changeTheme} style="cursor: pointer; ">
             <MoonOutline id="moon_icon" class="h-4 w-auto m-auto ml-4 hidden dark:text-gray-50" />
             <SunOutline id="sun_icon" class="h-4 w-auto m-auto ml-4 hidden dark:text-gray-50" />
         </button>
@@ -28,7 +28,7 @@
         <p class="mt-2 dark:text-gray-50">© {new Date().getFullYear()} Harrison Phillingham</p>
         <div class="flex items-center mt-2">
             <LockOutline class="h-4 w-auto dark:text-gray-50" />
-            <a href="/gpg" class="ml-1 dark:text-gray-50">GPG Key</a>
+            <a href="/openpgp" class="ml-1 dark:text-gray-50">OpenPGP Key</a>
         </div>
     </div>
 

@@ -10,8 +10,12 @@
         return await response.json()
     }
 
+    let email = '';
+
     onMount(async () => {
         const data = await getEmail();
+        email = "mailto:" + data.email;
+
     })
 
 </script>
@@ -32,4 +36,4 @@
 
 <div class="mt-8"></div>
 
-<p class="mt-2 ml-0.5 dark:text-gray-50">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href=""> email</a>. The code is also available at GitHub as above.</p>
+<p class="mt-2 ml-0.5 dark:text-gray-50">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href="{email}"> email</a>. The code is also available at GitHub as above.</p>

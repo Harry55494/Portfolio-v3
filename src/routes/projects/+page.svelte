@@ -1,7 +1,6 @@
 
 <script>
     import {
-        AlignLeftOutline,
         ArrowDownOutline,
         ArrowRightOutline,
         ArrowUpRightFromSquareOutline,
@@ -12,29 +11,30 @@
         StarOutline
     } from "flowbite-svelte-icons";
     import { onMount } from "svelte";
-    import {cacheData, checkAndFetchData } from "$lib/data_functions.js";
+    import {cacheData, fetchFromCache } from "$lib/data_functions.js";
 
     const projects_overwrites = {
         pycatan: {
-            description:
+            title:
                 "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
             link: "/projects/pycatan",
         },
         conquerors_of_catan: {
-            description:
+            title:
                 "Third Year Degree Solo Project, using the MiniMax algorithm to play The Settlers of Catan.",
             link: "/projects/conquerors-of-catan",
         },
         hikers_challenge: {
-            description:
+            title:
                 "Climb mountains and earn badges! A demo Android App created as part of an MSc Course.",
+            image: "https://media.githubusercontent.com/media/Harry55494/Hikers-Challenge/refs/heads/master/assets/icon-circle-border.png"
         },
         portfolio_v3: {
-            description:
+            title:
                 "Third version of a Portfolio, aiming for a simple markdown-inspired theme. Built using SvelteKit and Tailwind.",
         },
         portfolio_v2: {
-            description:
+            title:
                 "Portfolio v2, built while at University using Svelte. Single page application.",
             image: "svelte-logo.png",
         },
@@ -50,6 +50,7 @@
         "Portfolio-v2",
     ];
 
+    var force_update_all = false;
 
 
     async function getPublicGitHubRepos() {
@@ -58,7 +59,13 @@
 
         extracted_repo_data = Object.values({});
 
-        const data = await checkAndFetchData("REPO_DATA_CACHE", "/data/github-repos")
+        let data = await fetchFromCache("REPO_DATA_CACHE", force_update_all);
+        if (!data) {
+            const response = await fetch('/data/github-repos', { method: "GET" });
+            data = await response.json();
+            await cacheData("REPO_DATA_CACHE", data);
+        }
+
 
         extracted_repo_data = data.repos
             .filter((repo) => filter_list.includes(repo.name))
@@ -67,8 +74,8 @@
                 const overwrite = projects_overwrites[overwriteKey];
                 return {
                     name: repo.name.replaceAll("-", " "),
-                    description:
-                        overwrite?.description || repo.description?.split("[")[0] || "",
+                    title:
+                        overwrite?.title || repo.title?.split("[")[0] || "",
                     image:
                         overwrite?.image ||
                         "https://raw.githubusercontent.com/Harry55494/" +
@@ -93,6 +100,64 @@
         document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
 
+    function getDisplayDate(string){
+
+        const date_object = new Date()
+        const month = String(date_object.getMonth() + 1).padStart(2, "0");
+        const date = String(date_object.getDate()).padStart(2, "0");
+        const compare_date = `${date_object.getFullYear()}-${month}-${date}`
+
+        let display_time;
+        display_time = (() => {
+            if (string.split('T')[0] === compare_date) {
+                return string.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
+            } else  {
+                return string.split('T')[0].split('-').reverse().join('/')
+            }
+        })();
+
+        return display_time
+
+    }
+
+    async function getCommitsForRepos() {
+        const commit_activity = [];
+
+        for (const repo of filter_list) {
+            const repo_target = repo.toLowerCase();
+
+            try {
+
+                let data = await fetchFromCache(`COMMIT_DATA_${repo_target}`, force_update_all);
+                if (!data) {
+                    const response = await fetch(`/data/github-commits?repo=${repo_target}`, { method: "GET" });
+                    data = await response.json();
+                    await cacheData(`COMMIT_DATA_${repo_target}`, data);
+                }
+
+                console.log(data)
+
+                const repo_commits = data.commits.map((commit) => ({
+                    event: 'commit',
+                    sort_time: commit.commit.committer.date,
+                    display_time: getDisplayDate(commit.commit.committer.date),
+                    repository: repo_target,
+                    title: `Made a commit in ${repo_target}`,
+                    description: commit.commit.message,
+                    icon: ArrowRightOutline,
+                    verified: commit.commit.verification.verified,
+
+                }));
+
+                commit_activity.push(...repo_commits);
+            } catch (error) {
+                console.error(`Error fetching commits for ${repo_target}:`, error);
+            }
+        }
+
+        return commit_activity;
+    }
+
     async function getGitHubActivity() {
 
         document.getElementById("arrow_icon_activity").classList.remove("hidden");
@@ -100,16 +165,27 @@
 
         extracted_activity_data = Object.values({});
 
-        const data = await checkAndFetchData("ACTIVIY_DATA_CACHE", "/data/github-activity")
+        let data = await fetchFromCache("ACTIVIY_DATA_CACHE", force_update_all);
+        if (!data) {
+            const response = await fetch('/data/github-activity', { method: "GET" });
+            data = await response.json();
+            await cacheData("ACTIVIY_DATA_CACHE", data);
+        }
 
-        console.log(data)
+        extracted_activity_data = data.repos.filter((repo) => repo.type !== 'PushEvent').map((repo) => {
 
-        const date_object = new Date()
-        const month = String(date_object.getMonth() + 1).padStart(2, "0");
-        const date = String(date_object.getDate()).padStart(2, "0");
-        const compare_date = `${date_object.getFullYear()}-${month}-${date}`
+            const repo_name = repo.repo.name.replace('Harry55494/', '')
 
-        extracted_activity_data = data.repos.map((repo) => {
+            const event_title = (() => {
+                switch (repo.type) {
+                    case 'PushEvent': return `Pushed to ${repo_name}`
+                    case 'WatchEvent': return `Watched ${repo_name}`
+                    case 'CreateEvent': return `Created Branch '${repo.payload.ref}' in ${repo_name}`
+                    case 'PullRequestEvent': return `Created Pull Request #${repo.payload.number} in ${repo_name}`
+                    default: return "An Event Happened"
+                }
+            })();
+
 
             const icon = (() => {
                 switch (repo.type) {
@@ -117,43 +193,27 @@
                     case 'CreateEvent': return CodeBranchOutline;
                     case 'WatchEvent': return EyeOutline
                     case 'PullRequestEvent': return CodeBranchOutline
-                    case 'IssueCommentEvent': return AlignLeftOutline
                     default: return CodeBranchOutline;
                 }
 
             })();
 
-            const display_time = (() => {
-                if (repo.created_at.split('T')[0] === compare_date) {
-                    return repo.created_at.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
-                } else  {
-                    return repo.created_at.split('T')[0].split('-').reverse().join('/')
-                }
-            })();
-
-            const repo_name = repo.repo.name.replace('Harry55494/', '')
-
-            const description = (() => {
-                switch (repo.type) {
-                    case 'PushEvent': return `Pushed to ${repo_name}`
-                    case 'WatchEvent': return `Watched ${repo_name}`
-                    case 'CreateEvent': return `Created Branch '${repo.payload.ref}' in ${repo_name}`
-                    case 'PullRequestEvent': return `Created Pull Request #${repo.payload.number} in ${repo_name}`
-                    case 'IssueCommentEvent': return `Commented on issue #${repo.payload.issue.number} in ${repo_name}`
-                    default: return "An Event Happened"
-                }
-            })();
-
             return {
                 event: repo.type.replace('Event', ''),
                 sort_time: repo.created_at,
-                display_time,
+                display_time: getDisplayDate(repo.created_at),
                 repository: repo_name,
-                description,
-                icon
-
+                title: event_title,
+                description: null,
+                icon,
+                verified: false
             };
-        }).sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time))
+        })
+
+        const git_commit_data = await(getCommitsForRepos())
+        extracted_activity_data = [...extracted_activity_data, ...git_commit_data].sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time)).slice(0, 10);
+
+        console.log(extracted_activity_data)
 
         await new Promise((resolve) => {
             setTimeout(resolve, 150);
@@ -162,6 +222,14 @@
         document.getElementById("refresh_icon_activity").classList.remove("hidden");
         document.getElementById("arrow_icon_activity").classList.add("hidden");
     }
+
+    async function forceUpdateData(){
+        force_update_all = true;
+        await getPublicGitHubRepos()
+        await getGitHubActivity()
+        force_update_all = false;
+    }
+
 
     onMount(() => {
         getPublicGitHubRepos();
@@ -174,44 +242,45 @@
 <div class="m-auto dark:text-gray-50">
     <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">Projects</h1>
-        <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={getPublicGitHubRepos}>
-            <RefreshOutline id="refresh_icon_projects" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
-            <ArrowDownOutline id="arrow_icon_projects" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+        <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" onclick={getPublicGitHubRepos}>
+            <RefreshOutline id="arrow_icon_projects" class="w-6 dark:text-gray-50 text-gray-600 hidden animate-spin"></RefreshOutline>
+            <ArrowDownOutline id="refresh_icon_projects" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
 
     </div>
 
-    <p class="mb-5 ml-0.5 text-gray-900 sm:text-base text-[14px] dark:text-gray-50">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 5 minutes. </p>
+    <p class="mb-5 ml-0.5 text-gray-900 sm:text-base text-[14px] dark:text-gray-50">Projects and Recent Activity listed here are pulled live from my public <a href="https://github.com/harry55494" class="underline">GitHub profile</a> via GitHub's API. Data is cached for 15 minutes. Force update it by clicking  <button onclick="{forceUpdateData}" class="underline cursor-pointer">here</button>. </p>
 
     <hr class="w-full m-auto dark:text-gray-100 mb-5" />
 
     <p id='connection_error' class="hidden">Connection Error - Please try again later.</p>
 
+    <!-- Projects Section -->
 
     <ul class="ml-1">
         {#each extracted_repo_data as project}
             <li class="sm:mb-7 mb-5">
                 <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
-                        <div class="h-auto sm:w-[80px] w-[60px] ">
-                            <CodeOutline class="m-auto h-auto sm:w-[70px] w-[40px] border-2 border-gray-500 rounded-xl"></CodeOutline>
+                        <div class="h-auto sm:w-20 w-[60px] ">
+                            <CodeOutline class="m-auto h-auto sm:w-[70px] w-10 border-2 border-gray-500 rounded-xl"></CodeOutline>
                         </div>
                     {:else}
-                        <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
+                        <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-20 w-[60px] object-cover rounded-md">
                     {/if}
                     <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
                             <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{:else}{/if}</a>
-                            <div class="sm:mr-5 m-1 flex flex-row items-center">
-                                <StarOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></StarOutline>
-                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-1 text-center">{project.stars}</p>
+                            <div class="sm:mr-2 m-1 flex flex-row items-center">
+                                <StarOutline class="sm:w-4 w-3.5 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></StarOutline>
+                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-[15px] text-[13px] dark:text-gray-100 w-1 text-center">{project.stars}</p>
                                 <!--<EyeOutline class="w-4 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></EyeOutline>
                                 <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100">{project.watchers}</p>-->
                             </div>
 
                         </div>
 
-                        <p class="text-gray-900 sm:text-base text-[14px] dark:text-gray-100">{project.description}</p>
+                        <p class="text-gray-900 sm:text-base text-[14px] dark:text-gray-100">{project.title}</p>
                     </div>
                 </div>
             </li>
@@ -222,24 +291,32 @@
 
     <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-7 dark:text-gray-50">Recent Activity</h1>
-        <button type="button" class="mt-auto mb-auto ml-2 hover:cursor-pointer" on:click={getGitHubActivity()}>
-            <RefreshOutline id="refresh_icon_activity" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
-            <ArrowDownOutline id="arrow_icon_activity" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+        <button type="button" class="mt-auto mb-auto ml-2 hover:cursor-pointer" onclick={getGitHubActivity}>
+            <RefreshOutline id="arrow_icon_activity" class="w-6 dark:text-gray-50 text-gray-600 hidden animate-spin"></RefreshOutline>
+            <ArrowDownOutline id="refresh_icon_activity" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
 
     </div>
 
+    <!-- Activity Section -->
+
     <ul class="ml-1 mb-5 sm:mb-12">
         {#each extracted_activity_data as activity}
-            <li class="sm:mb-5 mb-2">
+            <li class="sm:mb-5 mb-4">
                 <div class="flex gap-2 items-start w-full">
-                    <svelte:component this={activity.icon} class="sm:w-8 w-6 h-auto dark:text-gray-50 text-gray-900 "/>
+                    <svelte:component this={activity.icon} class="sm:w-7 w-6 h-auto dark:text-gray-50 text-gray-900 -ml-1.5"/>
                     <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
-                            <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
-                            <div class="sm:mr-5 m-1 flex flex-row items-center">
-                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[14px] dark:text-gray-100 ">{activity.display_time}</p>
+                            <div>
+                                <p class="text-gray-900 sm:text-[16px] text-[14px] font-semibold dark:text-gray-100 w-[3/4]">{activity.title}</p>
+                                <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
                             </div>
+
+                            <p class="sm:mr-3 mr-1 text-gray-900 sm:text-[14px] text-[12px] dark:text-gray-100 sm:mt-0 mt-1">
+                                <span class="hidden sm:inline">{activity.display_time}</span>
+                                <span class="sm:hidden">{activity.display_time.includes('/') ? activity.display_time.split('/').slice(0, 2).join('/') : activity.display_time}</span>
+                            </p>
+
                         </div>
 
                     </div>
