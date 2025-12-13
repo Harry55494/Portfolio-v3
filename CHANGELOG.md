@@ -1,4 +1,4 @@
-## [unreleased]
+## Portfolio-v3 - Release v0.4
 
 ### 🚀 Features
 
@@ -7,10 +7,14 @@
 - Added stars to projects, removed unneeded images
 - Added connection error message
 - Added recent activity section to projects page
-- Cache data, and pre-fetch data from home screen for speed
+- Cache data functions
 - Added content to about page
 - Updated catan pages, added email function, updated robots
 - Added PGP key
+- Added openpgp description, changed gpg -> openpgp terminology
+- Added working commit API fetching
+- Updated activity styling with title, description and spacing
+- Added better caching of commit data and force update option
 
 ### 🐛 Bug Fixes
 
@@ -21,3 +25,5 @@
 - Updated Biome config and ran Biome formatter on all files
 - Bump version number
 - Bug fixes/robots.txt generation
+- Added changelog, and release versioning scripts
+- Bump dependency versions
