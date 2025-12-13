@@ -5,7 +5,7 @@
     let quick_links = [
         { name: "About", href: "/about"},
         { name: "Homelab", href: "/about#homelab" },
-        { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", description: "" },
+        { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", title: "" },
     ];
 
     async function prefetchData(){
@@ -18,7 +18,7 @@
         const already_visited = localStorage.getItem("ALREADY_VISITED");
 
         if (!already_visited) {
-            quick_links[0].description = "<-- Start Here"
+            quick_links[0].title = "<-- Start Here"
             localStorage.setItem("ALREADY_VISITED", true)
         }
 
@@ -37,6 +37,6 @@
 
 <ul class="flex flex-col gap-1 list-disc list-inside justify-between dark:text-gray-100">
     {#each quick_links as link}
-        <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.description} &nbsp; {link.description}{/if}</li>
+        <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
     {/each}
 </ul>

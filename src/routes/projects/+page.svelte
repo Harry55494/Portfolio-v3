@@ -15,25 +15,25 @@
 
     const projects_overwrites = {
         pycatan: {
-            description:
+            title:
                 "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
             link: "/projects/pycatan",
         },
         conquerors_of_catan: {
-            description:
+            title:
                 "Third Year Degree Solo Project, using the MiniMax algorithm to play The Settlers of Catan.",
             link: "/projects/conquerors-of-catan",
         },
         hikers_challenge: {
-            description:
+            title:
                 "Climb mountains and earn badges! A demo Android App created as part of an MSc Course.",
         },
         portfolio_v3: {
-            description:
+            title:
                 "Third version of a Portfolio, aiming for a simple markdown-inspired theme. Built using SvelteKit and Tailwind.",
         },
         portfolio_v2: {
-            description:
+            title:
                 "Portfolio v2, built while at University using Svelte. Single page application.",
             image: "svelte-logo.png",
         },
@@ -65,8 +65,8 @@
                 const overwrite = projects_overwrites[overwriteKey];
                 return {
                     name: repo.name.replaceAll("-", " "),
-                    description:
-                        overwrite?.description || repo.description?.split("[")[0] || "",
+                    title:
+                        overwrite?.title || repo.title?.split("[")[0] || "",
                     image:
                         overwrite?.image ||
                         "https://raw.githubusercontent.com/Harry55494/" +
@@ -111,6 +111,45 @@
 
     }
 
+    async function getCommitsForRepos() {
+        const commit_activity = [];
+
+        for (const repo of filter_list) {
+            const repo_target = repo.toLowerCase();
+
+            try {
+                const response = await fetch(`/data/github-commits?repo=${repo_target}`, { method: "GET" });
+
+                if (!response.ok) {
+                    console.warn(`Failed to fetch commits for ${repo_target}`);
+                    continue;
+                }
+
+                const data = await response.json();
+
+                console.log(data)
+
+                const repo_commits = data.commits.map((commit) => ({
+                    event: 'commit',
+                    sort_time: commit.commit.committer.date,
+                    display_time: getDisplayDate(commit.commit.committer.date),
+                    repository: repo_target,
+                    title: `Made a commit in ${repo_target}`,
+                    description: commit.commit.message,
+                    icon: ArrowRightOutline,
+                    verified: commit.commit.verification.verified,
+
+                }));
+
+                commit_activity.push(...repo_commits);
+            } catch (error) {
+                console.error(`Error fetching commits for ${repo_target}:`, error);
+            }
+        }
+
+        return commit_activity;
+    }
+
     async function getGitHubActivity() {
 
         document.getElementById("arrow_icon_activity").classList.remove("hidden");
@@ -124,7 +163,7 @@
 
             const repo_name = repo.repo.name.replace('Harry55494/', '')
 
-            const description = (() => {
+            const event_title = (() => {
                 switch (repo.type) {
                     case 'PushEvent': return `Pushed to ${repo_name}`
                     case 'WatchEvent': return `Watched ${repo_name}`
@@ -151,13 +190,12 @@
                 sort_time: repo.created_at,
                 display_time: getDisplayDate(repo.created_at),
                 repository: repo_name,
-                description,
+                title: event_title,
+                description: null,
                 icon,
                 verified: false
-
             };
         })
-
 
         const git_commit_data = await(getCommitsForRepos())
         extracted_activity_data = [...extracted_activity_data, ...git_commit_data].sort((a, b) => new Date(b.sort_time) - new Date(a.sort_time)).slice(0, 10);
@@ -172,43 +210,6 @@
         document.getElementById("arrow_icon_activity").classList.add("hidden");
     }
 
-    async function getCommitsForRepos() {
-        const commit_activity = [];
-
-        for (const repo of filter_list) {
-            const repo_target = repo.toLowerCase();
-
-            try {
-                const response = await fetch(`/data/github-commits?repo=${repo_target}`, { method: "GET" });
-
-                if (!response.ok) {
-                    console.warn(`Failed to fetch commits for ${repo_target}`);
-                    continue;
-                }
-
-                const data = await response.json();
-
-                console.log(data)
-
-                const repo_commits = data.commits.map((commit) => ({
-                    event: 'commit',
-                    sort_time: commit.commit.committer.date,
-                    display_time: getDisplayDate(commit.commit.committer.date),
-                    repository: repo_target,
-                    description: commit.commit.message,
-                    icon: ArrowRightOutline,
-                    verified: commit.commit.verification.verified,
-
-                }));
-
-                commit_activity.push(...repo_commits);
-            } catch (error) {
-                console.error(`Error fetching commits for ${repo_target}:`, error);
-            }
-        }
-
-        return commit_activity;
-    }
 
     onMount(() => {
         getPublicGitHubRepos();
@@ -223,8 +224,8 @@
     <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-5 dark:text-gray-50">Projects</h1>
         <button type="button" class="mt-auto mb-auto ml-2 translate-y-[2.5px] hover:cursor-pointer" on:click={getPublicGitHubRepos}>
-            <RefreshOutline id="refresh_icon_projects" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
-            <ArrowDownOutline id="arrow_icon_projects" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+            <RefreshOutline id="arrow_icon_projects" class="w-6 dark:text-gray-50 text-gray-600 hidden animate-spin"></RefreshOutline>
+            <ArrowDownOutline id="refresh_icon_projects" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
 
     </div>
@@ -235,17 +236,18 @@
 
     <p id='connection_error' class="hidden">Connection Error - Please try again later.</p>
 
+    <!-- Projects Section -->
 
     <ul class="ml-1">
         {#each extracted_repo_data as project}
             <li class="sm:mb-7 mb-5">
                 <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
-                        <div class="h-auto sm:w-[80px] w-[60px] ">
-                            <CodeOutline class="m-auto h-auto sm:w-[70px] w-[40px] border-2 border-gray-500 rounded-xl"></CodeOutline>
+                        <div class="h-auto sm:w-20 w-[60px] ">
+                            <CodeOutline class="m-auto h-auto sm:w-[70px] w-10 border-2 border-gray-500 rounded-xl"></CodeOutline>
                         </div>
                     {:else}
-                        <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-[6px]">
+                        <img src={project.image} alt={project.name} class="mt-1 h-auto sm:w-[80px] w-[60px] object-cover rounded-md">
                     {/if}
                     <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
@@ -259,7 +261,7 @@
 
                         </div>
 
-                        <p class="text-gray-900 sm:text-base text-[14px] dark:text-gray-100">{project.description}</p>
+                        <p class="text-gray-900 sm:text-base text-[14px] dark:text-gray-100">{project.title}</p>
                     </div>
                 </div>
             </li>
@@ -271,23 +273,31 @@
     <div class="flex">
         <h1 class="text-3xl font-bold mt-5 mb-7 dark:text-gray-50">Recent Activity</h1>
         <button type="button" class="mt-auto mb-auto ml-2 hover:cursor-pointer" on:click={getGitHubActivity()}>
-            <RefreshOutline id="refresh_icon_activity" class="w-6 dark:text-gray-50 text-gray-600 hidden "></RefreshOutline>
-            <ArrowDownOutline id="arrow_icon_activity" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
+            <RefreshOutline id="arrow_icon_activity" class="w-6 dark:text-gray-50 text-gray-600 hidden animate-spin"></RefreshOutline>
+            <ArrowDownOutline id="refresh_icon_activity" class="w-6 dark:text-gray-50 text-gray-600"></ArrowDownOutline>
         </button>
 
     </div>
 
+    <!-- Activity Section -->
+
     <ul class="ml-1 mb-5 sm:mb-12">
         {#each extracted_activity_data as activity}
-            <li class="sm:mb-5 mb-2">
+            <li class="sm:mb-5 mb-4">
                 <div class="flex gap-2 items-start w-full">
-                    <svelte:component this={activity.icon} class="sm:w-8 w-6 h-auto dark:text-gray-50 text-gray-900 "/>
+                    <svelte:component this={activity.icon} class="sm:w-7 w-6 h-auto dark:text-gray-50 text-gray-900 -ml-1.5"/>
                     <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
-                            <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
-                            <div class="sm:mr-5 m-1 flex flex-row items-center">
-                                <p class="sm:mr-3 mr-2 text-gray-900 sm:text-base text-[14px] dark:text-gray-100 ">{activity.display_time}</p>
+                            <div>
+                                <p class="text-gray-900 sm:text-base font-semibold text-[13px] dark:text-gray-100 w-[3/4]">{activity.title}</p>
+                                <p class="text-gray-900 sm:text-base text-[13px] dark:text-gray-100 w-[3/4]">{activity.description}</p>
                             </div>
+
+                            <p class="sm:mr-3 mr-1 text-gray-900 sm:text-[14px] text-[10px] dark:text-gray-100 sm:-mt-0 mt-1">
+                                <span class="hidden sm:inline">{activity.display_time}</span>
+                                <span class="sm:hidden">{activity.display_time.includes('/') ? activity.display_time.split('/').slice(0, 2).join('/') : activity.display_time}</span>
+                            </p>
+
                         </div>
 
                     </div>
