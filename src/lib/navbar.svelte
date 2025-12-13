@@ -28,7 +28,7 @@
     {/each}
 
 
-    <button class="sm:hidden flex flex-row" on:click={changeTheme} style="cursor: pointer; ">
+    <button class="sm:hidden flex flex-row" onclick={changeTheme} style="cursor: pointer; ">
         <MoonOutline id="moon_icon" class="h-4 w-auto m-auto hidden dark:text-gray-50" />
         <SunOutline id="sun_icon" class="h-4 w-auto m-auto hidden dark:text-gray-50" />
     </button>

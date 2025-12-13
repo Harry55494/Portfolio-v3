@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import {checkAndFetchData} from "$lib/data_functions.js"
+    import {fetchFromCache} from "$lib/data_functions.js"
 
     let quick_links = [
         { name: "About", href: "/about"},
@@ -9,8 +9,8 @@
     ];
 
     async function prefetchData(){
-        await checkAndFetchData("REPO_DATA_CACHE", "/data/github-repos")
-        await checkAndFetchData("ACTIVIY_DATA_CACHE", "/data/github-activity")
+        await fetchFromCache("REPO_DATA_CACHE", "/data/github-repos")
+        await fetchFromCache("ACTIVIY_DATA_CACHE", "/data/github-activity")
     }
 
     onMount(async () => {
@@ -22,7 +22,7 @@
             localStorage.setItem("ALREADY_VISITED", true)
         }
 
-        await prefetchData()
+        //await prefetchData()
     })
 
 </script>
