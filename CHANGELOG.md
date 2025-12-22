@@ -1,29 +1,22 @@
-## Portfolio-v3 - Release v0.4
+## Portfolio-v3 - Release [0.4.1] - 2025-12-22
 
-### 🚀 Features
+### 🚀 New Additions
 
-- Updated mobile layout
-- Updated icons and projects
-- Added stars to projects, removed unneeded images
-- Added connection error message
-- Added recent activity section to projects page
-- Cache data functions
-- Added content to about page
-- Updated catan pages, added email function, updated robots
-- Added PGP key
-- Added openpgp description, changed gpg -> openpgp terminology
-- Added working commit API fetching
-- Updated activity styling with title, description and spacing
-- Added better caching of commit data and force update option
+- Data pre-fetching
+- Live Dev site, with 'pre' prefixes for header and footer
+- Fetching of commits for all branches for repo activity
+- HTML URL for activity
+- Added gradual commit data loading
+- Variable data cache times
+- Button to increase length of activity up to set limit
 
 ### 🐛 Bug Fixes
 
-- Added proper email fetching from server
+- Removed console logs and added wrangler.toml
+- Fixed failed API calls by adding forced delay
+- Adjusted footer spacing
+- Updated commit icons to properly rehydrate after storage
 
 ### ⚙️ Miscellaneous Tasks
 
-- Updated Biome config and ran Biome formatter on all files
-- Bump version number
-- Bug fixes/robots.txt generation
-- Added changelog, and release versioning scripts
-- Bump dependency versions
+- Bumped cookie and js-yaml version for CVEs

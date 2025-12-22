@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import {fetchFromCache} from "$lib/data_functions.js"
+    import {cacheData, fetchFromCache} from "$lib/data_functions.js"
 
     let quick_links = [
         { name: "About", href: "/about"},
@@ -9,8 +9,14 @@
     ];
 
     async function prefetchData(){
-        await fetchFromCache("REPO_DATA_CACHE", "/data/github-repos")
-        await fetchFromCache("ACTIVIY_DATA_CACHE", "/data/github-activity")
+        // Try and grab data if it exists / isn't expired
+        let data = await fetchFromCache("REPO_DATA_CACHE");
+        if (!data) {
+            // Fetch raw data if needed
+            const response = await fetch('/data/github-repos', { method: "GET" });
+            data = await response.json();
+            await cacheData("REPO_DATA_CACHE", data);
+        }
     }
 
     onMount(async () => {
@@ -18,11 +24,11 @@
         const already_visited = localStorage.getItem("ALREADY_VISITED");
 
         if (!already_visited) {
-            quick_links[0].title = "<-- Start Here"
+            quick_links[0].title = "<-- Start Here!"
             localStorage.setItem("ALREADY_VISITED", true)
         }
 
-        //await prefetchData()
+        await prefetchData()
     })
 
 </script>

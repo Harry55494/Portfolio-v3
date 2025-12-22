@@ -8,12 +8,10 @@ export async function GET({ url }) {
 	});
 
 	const response = await octokit.request(
-		"GET /repos/{username}/{repo}/commits",
+		"GET /repos/{username}/{repo}/branches",
 		{
 			username: "harry55494",
 			repo: url.searchParams.get("repo"),
-			sha: url.searchParams.get("branch"),
-			per_page: 10,
 			headers: {
 				"X-GitHub-Api-Version": "2022-11-28",
 				Accept: "application/vnd.github+json",

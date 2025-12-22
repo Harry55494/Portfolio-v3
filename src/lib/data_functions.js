@@ -1,9 +1,10 @@
-export async function cacheData(CACHE_KEY, data) {
+export async function cacheData(CACHE_KEY, data, cache_duration_mins = 15) {
+	const EXPIRY_DATE = Date.now() + cache_duration_mins * 60 * 1000;
 	localStorage.setItem(
 		CACHE_KEY,
 		JSON.stringify({
 			data,
-			timestamp: Date.now(),
+			expiry_date: EXPIRY_DATE,
 		}),
 	);
 
@@ -11,15 +12,14 @@ export async function cacheData(CACHE_KEY, data) {
 }
 
 export async function fetchFromCache(CACHE_KEY, FORCE_NEW = false) {
-	const CACHE_DURATION = 15 * 60 * 1000;
-
 	const cached = localStorage.getItem(CACHE_KEY);
-	let data;
+
+	let parsed_json;
 
 	if (cached && !FORCE_NEW) {
-		data = JSON.parse(cached).data;
-		if (JSON.parse(cached).timestamp + CACHE_DURATION > Date.now()) {
-			return data;
+		parsed_json = JSON.parse(cached);
+		if (parsed_json.expiry_date > Date.now()) {
+			return parsed_json.data;
 		}
 	}
 

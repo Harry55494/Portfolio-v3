@@ -8,5 +8,5 @@ execSync(`git tag ${tag}`);
 console.log(`✓ Created tag ${tag}`);
 
 // Push with tags
-execSync(`git push gitea main --tags`);
-console.log("✓ Pushed to main with tags");
+execSync(`git push gitea development --tags`);
+console.log("✓ Pushed to development with tags");

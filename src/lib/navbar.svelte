@@ -10,15 +10,20 @@
 
     let current_path = "";
 
+    let title_extension = "";
+
     onMount(() => {
         current_path = document.location.pathname.toString().split("/")[1];
+        if (document.location.href.toString().indexOf('pre.harrison.phillingham.com') > -1) {
+            title_extension = ' - Preview Site 🛠️'
+        }
     });
 </script>
 
 
 <div class="flex justify-left align-middle left-0 top-0 right-0 m-auto align-content-center w-full h-16 select-none">
 
-    <a href="/" class="mt-auto mb-auto w-[100vw] dark:text-gray-50 font-bold sm:text-lg">Harrison Phillingham</a>
+    <a href="/" class="mt-auto mb-auto w-screen dark:text-gray-50 font-bold sm:text-lg">Harrison Phillingham{title_extension}</a>
 
     <div class="w-full"></div>
 
