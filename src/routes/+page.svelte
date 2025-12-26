@@ -5,8 +5,12 @@
     let quick_links = [
         { name: "About", href: "/about"},
         { name: "Homelab", href: "/about#homelab" },
-        { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", title: "" },
     ];
+
+    let project_pages = [
+        { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", title: "" },
+        { name: "pyCatan", href: "/projects/pycatan", title: "" },
+    ]
 
     async function prefetchData(){
         // Try and grab data if it exists / isn't expired
@@ -39,10 +43,25 @@
 
 <div class="sm:flex sm:justify-between text-gray-700"><p class=" dark:text-gray-100 mt-3">📍Beddgelert, Wales - August 2022</p> <p class=" sm:mt-3 mt-1 dark:text-gray-100">📷 Canon EOS RP 24-105mm</p> </div>
 
-<h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Quick Links</h3>
+<div class="flex sm:flex-row flex-col">
+    <div class="sm:w-[50%] w-full">
+        <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Quick Links</h3>
 
-<ul class="flex flex-col gap-1 list-disc list-inside justify-between dark:text-gray-100">
-    {#each quick_links as link}
-        <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
-    {/each}
-</ul>
+        <ul class="flex flex-col gap-1 list-disc list-inside justify-between dark:text-gray-100">
+            {#each quick_links as link}
+                <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
+            {/each}
+        </ul>
+    </div>
+
+    <div class="sm:w-[50%] w-full">
+
+        <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Project Pages</h3>
+
+        <ul class="flex flex-col gap-1 list-disc list-inside justify-between dark:text-gray-100">
+            {#each project_pages as link}
+                <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
+            {/each}
+        </ul>
+    </div>
+</div>
