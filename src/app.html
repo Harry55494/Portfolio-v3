@@ -3,7 +3,7 @@
 
 	<script>
 		try {
-			const theme = localStorage.getItem('color-theme');
+			const theme = localStorage.getItem('targetColourTheme');
 			const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 			if (isDark) {
 				document.documentElement.classList.add('dark');

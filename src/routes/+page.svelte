@@ -2,12 +2,12 @@
     import {onMount} from "svelte";
     import {cacheData, fetchFromCache} from "$lib/data_functions.js"
 
-    let quick_links = [
+    let quickLinks = [
         { name: "About", href: "/about"},
         { name: "Homelab", href: "/about#homelab" },
     ];
 
-    let project_pages = [
+    let projectLinks = [
         { name: "Conquerors of Catan", href: "/projects/conquerors-of-catan", title: "" },
         { name: "pyCatan", href: "/projects/pycatan", title: "" },
     ]
@@ -25,10 +25,11 @@
 
     onMount(async () => {
 
-        const already_visited = localStorage.getItem("ALREADY_VISITED");
+        // firstPageVisit bypasses cache functions
+        const firstPageVisit = localStorage.getItem("ALREADY_VISITED");
 
-        if (!already_visited) {
-            quick_links[0].title = "<-- Start Here!"
+        if (!firstPageVisit) {
+            quickLinks[0].title = "<-- Start Here!"
             localStorage.setItem("ALREADY_VISITED", true)
         }
 
@@ -47,7 +48,7 @@
     <div class="sm:w-[50%] w-full">
         <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Quick Links</h3>
         <ul class="grid grid-cols-2 sm:flex sm:flex-col gap-1 list-disc list-inside dark:text-gray-100">
-            {#each quick_links as link}
+            {#each quickLinks as link}
                 <li><a class="underline text-blue-500" href={link.href}>{link.name}</a>{#if link.title} &nbsp; {link.title}{/if}</li>
             {/each}
         </ul>
@@ -59,7 +60,7 @@
         <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Project Pages</h3>
 
         <ul class="grid grid-cols-2 sm:flex sm:flex-col gap-1 list-disc list-inside dark:text-gray-100">
-            {#each project_pages as link}
+            {#each projectLinks as link}
                 <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
             {/each}
         </ul>

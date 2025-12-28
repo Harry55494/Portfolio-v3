@@ -12,7 +12,7 @@
     import { onMount } from "svelte";
     import {cacheData, fetchFromCache } from "$lib/data_functions.js";
 
-    const projects_overwrites = {
+    const global_retrievedProjectDataOverwrites = {
         pycatan: {
             title:
                 "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
@@ -39,9 +39,9 @@
         },
     };
 
-    let extracted_repo_data = Object.values({});
+    let global_extractedRepoData = Object.values({});
     let global_extractedActivityData = Object.values({});
-    const filter_list = [
+    const global_repoFilterList = [
         "pyCatan",
         "Conquerors-of-Catan",
         "Portfolio-v3",
@@ -50,15 +50,14 @@
     ];
 
     let global_forceUpdateAll = false;
-
-    let global_ActivityLength = 10;
-    let global_ActivityLengthLimit = 50;
+    let global_currentActivityLength = 10;
+    let global_activityLengthLimit = 50;
 
     global_extractedActivityData = Object.values({});
 
     function increaseActivityDataLength(){
-        global_ActivityLength = global_ActivityLength + 10;
-        if (global_ActivityLength >= global_ActivityLengthLimit) {
+        global_currentActivityLength = global_currentActivityLength + 10;
+        if (global_currentActivityLength >= global_activityLengthLimit) {
             document.getElementById('ID_loadMoreActivityButton').classList.add('hidden')
             document.getElementById('ID_endOfActivityText').classList.remove('hidden')
         }
@@ -68,7 +67,7 @@
     async function getPublicGitHubRepos() {
         document.getElementById("arrow_icon_projects").classList.remove("hidden");
 
-        extracted_repo_data = Object.values({});
+        global_extractedRepoData = Object.values({});
 
         let data = await fetchFromCache("REPO_DATA_CACHE", global_forceUpdateAll);
         if (!data) {
@@ -78,28 +77,28 @@
         }
 
 
-        extracted_repo_data = data.repos
-            .filter((repo) => filter_list.includes(repo.name))
+        global_extractedRepoData = data.repos
+            .filter((repo) => global_repoFilterList.includes(repo.name))
             .map((repo) => {
                 const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
-                const overwrite = projects_overwrites[overwriteKey];
+                const repoOverwriteData = global_retrievedProjectDataOverwrites[overwriteKey];
                 return {
                     name: repo.name.replaceAll("-", " "),
                     title:
-                        overwrite?.title || repo.title?.split("[")[0] || "",
+                        repoOverwriteData?.title || repo.title?.split("[")[0] || "",
                     image:
-                        overwrite?.image ||
+                        repoOverwriteData?.image ||
                         "https://raw.githubusercontent.com/Harry55494/" +
                             repo.name +
                             "/refs/heads/master/icon.png",
-                    link: overwrite?.link || repo.html_url,
+                    link: repoOverwriteData?.link || repo.html_url,
                     last_updated: repo.pushed_at,
                     stars: repo.stargazers_count,
                 };
             })
             .sort((a, b) => {
-                const indexA = filter_list.indexOf(a.name.replaceAll(" ", "-"));
-                const indexB = filter_list.indexOf(b.name.replaceAll(" ", "-"));
+                const indexA = global_repoFilterList.indexOf(a.name.replaceAll(" ", "-"));
+                const indexB = global_repoFilterList.indexOf(b.name.replaceAll(" ", "-"));
                 return indexA - indexB;
             });
 
@@ -132,7 +131,7 @@
         // NOTE: Stores already formatted data
         let allCommitActivity = [];
 
-        for (const repo of filter_list) {
+        for (const repo of global_repoFilterList) {
             const repoTarget = repo.toLowerCase();
             const repoCommitActivity = [];
 
@@ -200,8 +199,6 @@
             await cacheData("ACTIVIY_DATA_CACHE", data);
         }
 
-        //console.log(data)
-
         global_extractedActivityData = data.repos.filter((repo) => repo.type !== 'PushEvent').map((repo) => {
 
             const repo_name = repo.repo.name.replace('Harry55494/', '')
@@ -254,7 +251,7 @@
 
         await(getCommitsForRepos())
 
-        global_extractedActivityData = global_extractedActivityData.slice(0, global_ActivityLengthLimit)
+        global_extractedActivityData = global_extractedActivityData.slice(0, global_activityLengthLimit)
 
         document.getElementById('ID_loadMoreActivityButton').classList.remove('hidden')
         document.getElementById("arrow_icon_activity").classList.add("hidden");
@@ -271,7 +268,6 @@
         global_forceUpdateAll = false;
 
     }
-
 
     onMount(async () => {
         // Fetch public repo data first, as that is the first to appear on the page
@@ -309,7 +305,7 @@
     <!-- Projects Section -->
 
     <ul class="ml-1">
-        {#each extracted_repo_data as project}
+        {#each global_extractedRepoData as project}
             <li class="sm:mb-7 mb-5">
                 <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
@@ -351,7 +347,7 @@
     <!-- Activity Section -->
 
     <ul class="ml-1 mb-5 sm:mb-12">
-        {#each global_extractedActivityData.slice(0,global_ActivityLength) as activity}
+        {#each global_extractedActivityData.slice(0,global_currentActivityLength) as activity}
             <li class="sm:mb-5 mb-4">
                 <div class="flex gap-2 items-start w-full">
                     <svelte:component this={activity.icon} class="sm:w-7 w-6 h-auto dark:text-gray-50 text-gray-900 -ml-1.5"/>

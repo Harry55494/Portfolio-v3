@@ -1,5 +1,5 @@
 <script>
-    const external_links = [
+    const externalLinks = [
         { title: "GitHub", ref: "https://github.com/harry55494/pyCatan" },
     ];
 </script>
@@ -9,7 +9,7 @@
     <div class="sm:mt-5 mt-1 mb-5 ">
         <h1 class="sm:text-3xl text-2xl font-bold mt-5 sm:mb-3 mb-1 dark:text-gray-50">pyCatan</h1>
         <ul class="flex flex-col gap-1 list-disc list-inside dark:text-gray-50">
-            {#each external_links as link}
+            {#each externalLinks as link}
                 <li><a class="underline text-blue-500 " href={link.ref}>{link.title}</a></li>
             {/each}
         </ul>

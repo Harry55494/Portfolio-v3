@@ -1,7 +1,7 @@
 <script>
     import {onMount} from "svelte";
 
-    const external_links = [
+    const externalLinks = [
         { title: "GitHub", ref: "https://github.com/harry55494/conquerors-of-catan" },
     ];
 
@@ -10,11 +10,11 @@
         return await response.json()
     }
 
-    let email = '';
+    let personalEmailAddress = '';
 
     onMount(async () => {
         const data = await getEmail();
-        email = "mailto:" + data.email;
+        personalEmailAddress = `mailto:${data.email}`;
 
     })
 
@@ -25,7 +25,7 @@
     <div class="sm:mt-5 mt-1 mb-5 ">
         <h1 class="sm:text-3xl text-2xl font-bold mt-5 sm:mb-3 mb-1 dark:text-gray-50">Conquerors of Catan</h1>
         <ul class="flex flex-col gap-1 list-disc list-inside dark:text-gray-50">
-            {#each external_links as link}
+            {#each externalLinks as link}
                 <li><a class="underline text-blue-500 " href={link.ref}>{link.title}</a></li>
             {/each}
         </ul>
@@ -42,4 +42,4 @@
 
 <div class="mt-8"></div>
 
-<p class="mt-2 ml-0.5 dark:text-gray-50">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href="{email}"> email</a>. The code is also available at GitHub as above.</p>
+<p class="mt-2 ml-0.5 dark:text-gray-50">In time, the project summary will be written here, however if you wish to read the final paper, you can request it via <a class="underline " href="{personalEmailAddress}"> email</a>. The code is also available at GitHub as above.</p>

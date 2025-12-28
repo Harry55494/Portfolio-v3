@@ -1,12 +1,12 @@
 <script>
-    const chapter_headings = {
+    const bodyChapterHeadings = {
         Work: "work",
         Homelab: "homelab",
         "Tools/Setup": "tools",
         "External Links": "external"
     };
 
-    const external_links = {
+    const externalLinks = {
         LinkedIn: "https://www.linkedin.com/in/harrison-phillingham/",
         GitHub: "https://github.com/harry55494",
         "OpenPGP Key": "https://keys.openpgp.org/search?q=harrison%40phillingham.com"
@@ -24,7 +24,7 @@
     <hr class="w-[60%] sm:w-[50%] mt-5 mb-4 border-gray-500">
 
     <ul class="flex flex-col gap-1 list-disc list-inside">
-        {#each Object.entries(chapter_headings) as [heading, id]}
+        {#each Object.entries(bodyChapterHeadings) as [heading, id]}
             <li><a class="underline text-blue-500 " href={"#" + id}>{heading}</a></li>
         {/each}
     </ul>
@@ -67,7 +67,7 @@
     <h3 id="external" class="text-2xl font-bold mt-8 mb-4">Links</h3>
 
     <ul class="flex flex-col gap-1 list-disc list-inside ml-1">
-        {#each Object.entries(external_links) as [heading, id]}
+        {#each Object.entries(externalLinks) as [heading, id]}
             <li><a class="underline text-blue-500 " href={id} target="_blank">{heading}</a></li>
         {/each}
     </ul>
