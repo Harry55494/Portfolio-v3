@@ -109,21 +109,38 @@
         document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
 
-    function getDisplayDate(inputDateString){
+    function getDisplayDate(inputDateString, relativeDate = true){
 
         const currentDateTimeObject = new Date()
-        const currentMonth = String(currentDateTimeObject.getMonth() + 1).padStart(2, "0");
-        const currentDate = String(currentDateTimeObject.getDate()).padStart(2, "0");
-        const compareDate = `${currentDateTimeObject.getFullYear()}-${currentMonth}-${currentDate}`
 
-        return (() => {
-            // Split at the T to get the date
-            if (inputDateString.split('T')[0] === compareDate) {
-                return inputDateString.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
-            } else  {
-                return inputDateString.split('T')[0].split('-').reverse().join('/')
-            }
-        })();
+        if (relativeDate){
+
+            const daysAgo = Math.floor((Date.parse(currentDateTimeObject) - Date.parse(inputDateString)) / 86400000);
+
+            if (daysAgo === 0) return "Today";
+            if (daysAgo === 1) return "Yesterday";
+            if (daysAgo >= 2 && daysAgo <= 7) return `${daysAgo} days ago`;
+            if (daysAgo >= 8 && daysAgo <= 31) return `${Math.floor(daysAgo/7)} week${Math.floor(daysAgo/7) > 1 ? 's' : ''} ago`;
+            if (daysAgo >= 31 && daysAgo <= 365) return `${Math.floor(daysAgo/30.5)} month${Math.floor(daysAgo/30.5) > 1 ? 's' : ''} ago`;
+            return "Over a year ago";
+
+        } else {
+
+            const currentMonth = String(currentDateTimeObject.getMonth() + 1).padStart(2, "0");
+            const currentDate = String(currentDateTimeObject.getDate()).padStart(2, "0");
+            const compareDate = `${currentDateTimeObject.getFullYear()}-${currentMonth}-${currentDate}`
+
+            return (() => {
+                // Split at the T to get the date
+                if (inputDateString.split('T')[0] === compareDate) {
+                    return inputDateString.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
+                } else  {
+                    return inputDateString.split('T')[0].split('-').reverse().join('/')
+                }
+            })();
+
+        }
+
 
     }
 
@@ -153,6 +170,7 @@
                                 event: 'commit',
                                 sort_time: commit.commit.committer.date,
                                 display_time: getDisplayDate(commit.commit.committer.date),
+                                display_proper_time: getDisplayDate(commit.commit.committer.date, false),
                                 repository: repoTarget,
                                 base_title_text: `Made a commit in `,
                                 branch: branchName.name,
@@ -240,6 +258,7 @@
                 event: repo.type.replace('Event', ''),
                 sort_time: repo.created_at,
                 display_time: getDisplayDate(repo.created_at),
+                display_proper_time: getDisplayDate(repo.created_at, false),
                 repository: repo_name,
                 base_title_text: base_title_text,
                 description: null,
