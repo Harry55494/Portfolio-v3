@@ -119,8 +119,8 @@
 
             if (daysAgo === 0) return "Today";
             if (daysAgo === 1) return "Yesterday";
-            if (daysAgo >= 2 && daysAgo <= 7) return `${daysAgo} days ago`;
-            if (daysAgo >= 8 && daysAgo <= 31) return `${Math.floor(daysAgo/7)} week${Math.floor(daysAgo/7) > 1 ? 's' : ''} ago`;
+            if (daysAgo >= 2 && daysAgo <= 6) return `${daysAgo} days ago`;
+            if (daysAgo >= 7 && daysAgo <= 31) return `${Math.floor(daysAgo/7)} week${Math.floor(daysAgo/7) > 1 ? 's' : ''} ago`;
             if (daysAgo >= 31 && daysAgo <= 365) return `${Math.floor(daysAgo/30.5)} month${Math.floor(daysAgo/30.5) > 1 ? 's' : ''} ago`;
             return "Over a year ago";
 
@@ -214,7 +214,7 @@
         if (!data) {
             const response = await fetch('/data/github-activity', { method: "GET" });
             data = await response.json();
-            await cacheData("ACTIVIY_DATA_CACHE", data);
+            await cacheData("ACTIVIY_DATA_CACHE", data, 720);
         }
 
         global_extractedActivityData = data.repos.filter((repo) => repo.type !== 'PushEvent').map((repo) => {

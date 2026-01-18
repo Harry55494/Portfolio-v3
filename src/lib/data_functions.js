@@ -1,5 +1,5 @@
-export async function cacheData(cacheKey, cacheData, cacheDuration = 15) {
-	const calculatedExpiryDate = Date.now() + cacheDuration * 60 * 1000;
+export async function cacheData(cacheKey, cacheData, cacheDurationMins = 15) {
+	const calculatedExpiryDate = Date.now() + cacheDurationMins * 60 * 1000;
 	localStorage.setItem(
 		cacheKey,
 		JSON.stringify({
