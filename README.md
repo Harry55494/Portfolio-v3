@@ -9,28 +9,27 @@
 
 &nbsp;
 
+![Header Image](/static/header-image-original.jpg)stat
+
 </div>
 
 
-## Release [0.4.1] - 2025-12-22
+## Release [0.4.2] - 2026-01-20
 
 ### 🚀 New Additions
 
-- Data pre-fetching
-- Live Dev site, with 'pre' prefixes for header and footer
-- Fetching of commits for all branches for repo activity
-- HTML URL for activity
-- Added gradual commit data loading
-- Variable data cache times
-- Button to increase length of activity up to set limit
+- Added icons for project pages
+- Added project page links to home page
+- Added basic relative dates
 
 ### 🐛 Bug Fixes
 
-- Removed console logs and added wrangler.toml
-- Fixed failed API calls by adding forced delay
-- Adjusted footer spacing
-- Updated commit icons to properly rehydrate after storage
+- Added columns for quick links on mobile
+- Adjusted times and cache variable name
+- Added consistent link formatting
 
 ### ⚙️ Miscellaneous Tasks
 
-- Bumped cookie and js-yaml version for CVEs
+- Refactor code and rename variables
+- Bump dependancies for CVE-2025-67647 & CVE-2026-22803
+

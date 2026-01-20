@@ -12,7 +12,7 @@
     import { onMount } from "svelte";
     import {cacheData, fetchFromCache } from "$lib/data_functions.js";
 
-    const projects_overwrites = {
+    const global_retrievedProjectDataOverwrites = {
         pycatan: {
             title:
                 "A Python GUI implementation of the board game Catan. Continuation of Conquerors of Catan project.",
@@ -39,9 +39,9 @@
         },
     };
 
-    let extracted_repo_data = Object.values({});
+    let global_extractedRepoData = Object.values({});
     let global_extractedActivityData = Object.values({});
-    const filter_list = [
+    const global_repoFilterList = [
         "pyCatan",
         "Conquerors-of-Catan",
         "Portfolio-v3",
@@ -50,15 +50,14 @@
     ];
 
     let global_forceUpdateAll = false;
-
-    let global_ActivityLength = 10;
-    let global_ActivityLengthLimit = 50;
+    let global_currentActivityLength = 10;
+    let global_activityLengthLimit = 50;
 
     global_extractedActivityData = Object.values({});
 
     function increaseActivityDataLength(){
-        global_ActivityLength = global_ActivityLength + 10;
-        if (global_ActivityLength >= global_ActivityLengthLimit) {
+        global_currentActivityLength = global_currentActivityLength + 10;
+        if (global_currentActivityLength >= global_activityLengthLimit) {
             document.getElementById('ID_loadMoreActivityButton').classList.add('hidden')
             document.getElementById('ID_endOfActivityText').classList.remove('hidden')
         }
@@ -68,7 +67,7 @@
     async function getPublicGitHubRepos() {
         document.getElementById("arrow_icon_projects").classList.remove("hidden");
 
-        extracted_repo_data = Object.values({});
+        global_extractedRepoData = Object.values({});
 
         let data = await fetchFromCache("REPO_DATA_CACHE", global_forceUpdateAll);
         if (!data) {
@@ -78,28 +77,28 @@
         }
 
 
-        extracted_repo_data = data.repos
-            .filter((repo) => filter_list.includes(repo.name))
+        global_extractedRepoData = data.repos
+            .filter((repo) => global_repoFilterList.includes(repo.name))
             .map((repo) => {
                 const overwriteKey = repo.name.toLowerCase().replace(/-/g, "_");
-                const overwrite = projects_overwrites[overwriteKey];
+                const repoOverwriteData = global_retrievedProjectDataOverwrites[overwriteKey];
                 return {
                     name: repo.name.replaceAll("-", " "),
                     title:
-                        overwrite?.title || repo.title?.split("[")[0] || "",
+                        repoOverwriteData?.title || repo.title?.split("[")[0] || "",
                     image:
-                        overwrite?.image ||
+                        repoOverwriteData?.image ||
                         "https://raw.githubusercontent.com/Harry55494/" +
                             repo.name +
                             "/refs/heads/master/icon.png",
-                    link: overwrite?.link || repo.html_url,
+                    link: repoOverwriteData?.link || repo.html_url,
                     last_updated: repo.pushed_at,
                     stars: repo.stargazers_count,
                 };
             })
             .sort((a, b) => {
-                const indexA = filter_list.indexOf(a.name.replaceAll(" ", "-"));
-                const indexB = filter_list.indexOf(b.name.replaceAll(" ", "-"));
+                const indexA = global_repoFilterList.indexOf(a.name.replaceAll(" ", "-"));
+                const indexB = global_repoFilterList.indexOf(b.name.replaceAll(" ", "-"));
                 return indexA - indexB;
             });
 
@@ -110,21 +109,38 @@
         document.getElementById("arrow_icon_projects").classList.add("hidden");
     }
 
-    function getDisplayDate(inputDateString){
+    function getDisplayDate(inputDateString, relativeDate = true){
 
         const currentDateTimeObject = new Date()
-        const currentMonth = String(currentDateTimeObject.getMonth() + 1).padStart(2, "0");
-        const currentDate = String(currentDateTimeObject.getDate()).padStart(2, "0");
-        const compareDate = `${currentDateTimeObject.getFullYear()}-${currentMonth}-${currentDate}`
 
-        return (() => {
-            // Split at the T to get the date
-            if (inputDateString.split('T')[0] === compareDate) {
-                return inputDateString.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
-            } else  {
-                return inputDateString.split('T')[0].split('-').reverse().join('/')
-            }
-        })();
+        if (relativeDate){
+
+            const daysAgo = Math.floor((Date.parse(currentDateTimeObject) - Date.parse(inputDateString)) / 86400000);
+
+            if (daysAgo === 0) return "Today";
+            if (daysAgo === 1) return "Yesterday";
+            if (daysAgo >= 2 && daysAgo <= 6) return `${daysAgo} days ago`;
+            if (daysAgo >= 7 && daysAgo <= 31) return `${Math.floor(daysAgo/7)} week${Math.floor(daysAgo/7) > 1 ? 's' : ''} ago`;
+            if (daysAgo >= 31 && daysAgo <= 365) return `${Math.floor(daysAgo/30.5)} month${Math.floor(daysAgo/30.5) > 1 ? 's' : ''} ago`;
+            return "Over a year ago";
+
+        } else {
+
+            const currentMonth = String(currentDateTimeObject.getMonth() + 1).padStart(2, "0");
+            const currentDate = String(currentDateTimeObject.getDate()).padStart(2, "0");
+            const compareDate = `${currentDateTimeObject.getFullYear()}-${currentMonth}-${currentDate}`
+
+            return (() => {
+                // Split at the T to get the date
+                if (inputDateString.split('T')[0] === compareDate) {
+                    return inputDateString.split('T')[1].replace('Z', '').split(":").slice(0, 2).join(":")
+                } else  {
+                    return inputDateString.split('T')[0].split('-').reverse().join('/')
+                }
+            })();
+
+        }
+
 
     }
 
@@ -132,7 +148,7 @@
         // NOTE: Stores already formatted data
         let allCommitActivity = [];
 
-        for (const repo of filter_list) {
+        for (const repo of global_repoFilterList) {
             const repoTarget = repo.toLowerCase();
             const repoCommitActivity = [];
 
@@ -154,6 +170,7 @@
                                 event: 'commit',
                                 sort_time: commit.commit.committer.date,
                                 display_time: getDisplayDate(commit.commit.committer.date),
+                                display_proper_time: getDisplayDate(commit.commit.committer.date, false),
                                 repository: repoTarget,
                                 base_title_text: `Made a commit in `,
                                 branch: branchName.name,
@@ -197,10 +214,8 @@
         if (!data) {
             const response = await fetch('/data/github-activity', { method: "GET" });
             data = await response.json();
-            await cacheData("ACTIVIY_DATA_CACHE", data);
+            await cacheData("ACTIVIY_DATA_CACHE", data, 720);
         }
-
-        //console.log(data)
 
         global_extractedActivityData = data.repos.filter((repo) => repo.type !== 'PushEvent').map((repo) => {
 
@@ -243,6 +258,7 @@
                 event: repo.type.replace('Event', ''),
                 sort_time: repo.created_at,
                 display_time: getDisplayDate(repo.created_at),
+                display_proper_time: getDisplayDate(repo.created_at, false),
                 repository: repo_name,
                 base_title_text: base_title_text,
                 description: null,
@@ -254,7 +270,7 @@
 
         await(getCommitsForRepos())
 
-        global_extractedActivityData = global_extractedActivityData.slice(0, global_ActivityLengthLimit)
+        global_extractedActivityData = global_extractedActivityData.slice(0, global_activityLengthLimit)
 
         document.getElementById('ID_loadMoreActivityButton').classList.remove('hidden')
         document.getElementById("arrow_icon_activity").classList.add("hidden");
@@ -271,7 +287,6 @@
         global_forceUpdateAll = false;
 
     }
-
 
     onMount(async () => {
         // Fetch public repo data first, as that is the first to appear on the page
@@ -309,7 +324,7 @@
     <!-- Projects Section -->
 
     <ul class="ml-1">
-        {#each extracted_repo_data as project}
+        {#each global_extractedRepoData as project}
             <li class="sm:mb-7 mb-5">
                 <div class="flex gap-4 items-start w-full">
                     {#if project.image === 'git-default'}
@@ -321,7 +336,12 @@
                     {/if}
                     <div class="flex flex-col w-full">
                         <div class="flex flex-flow justify-between ">
-                            <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} {#if project.link.includes('https')} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" />{:else}{/if}</a>
+                            {#if project.link.includes('https') }
+                                <a href={project.link} class="text-blue-500 hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name} <ArrowUpRightFromSquareOutline class="w-4 h-auto ml-2" /></a>
+                            {:else}
+                                <a href={project.link} class="underline hover:underline sm:text-[18px] text-[16px] sm:mb-0 mb-0 sm:mt-0 flex content-center">{project.name}</a>
+                            {/if}
+
                             <div class="sm:mr-2 m-1 flex flex-row items-center">
                                 <StarOutline class="sm:w-4 w-3.5 dark:text-gray-50 text-gray-600 sm:mr-1 mr-0.5"></StarOutline>
                                 <p class="sm:mr-3 mr-2 text-gray-900 sm:text-[15px] text-[13px] dark:text-gray-100 w-1 text-center">{project.stars}</p>
@@ -351,7 +371,7 @@
     <!-- Activity Section -->
 
     <ul class="ml-1 mb-5 sm:mb-12">
-        {#each global_extractedActivityData.slice(0,global_ActivityLength) as activity}
+        {#each global_extractedActivityData.slice(0,global_currentActivityLength) as activity}
             <li class="sm:mb-5 mb-4">
                 <div class="flex gap-2 items-start w-full">
                     <svelte:component this={activity.icon} class="sm:w-7 w-6 h-auto dark:text-gray-50 text-gray-900 -ml-1.5"/>

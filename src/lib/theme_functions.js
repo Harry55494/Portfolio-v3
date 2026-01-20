@@ -1,5 +1,6 @@
 export function setIcons() {
-	const theme = localStorage.getItem("color-theme");
+	// Correctly sets visibility of icons that change colour theme based on current theme
+	const theme = localStorage.getItem("targetColourTheme");
 	const isDark =
 		theme === "dark" ||
 		(!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -22,39 +23,42 @@ export function setIcons() {
 }
 
 export function initialSetTheme() {
+	// Set the theme upon page load based on user preference or default
 	if (
-		localStorage.getItem("color-theme") === "dark" ||
-		(!("color-theme" in localStorage) &&
+		localStorage.getItem("targetColourTheme") === "dark" ||
+		(!("targetColourTheme" in localStorage) &&
 			window.matchMedia("(prefers-color-scheme: dark)").matches)
 	) {
 		document.documentElement.classList.add("dark");
-		localStorage.setItem("color-theme", "dark");
+		localStorage.setItem("targetColourTheme", "dark");
 	} else {
 		document.documentElement.classList.remove("dark");
-		localStorage.setItem("color-theme", "light");
+		localStorage.setItem("targetColourTheme", "light");
 	}
 
+	// Then call set icons to match
 	setIcons();
 }
 
 export function changeTheme() {
-	if (localStorage.getItem("color-theme")) {
-		if (localStorage.getItem("color-theme") === "light") {
+	// Change theme and then set icons
+	if (localStorage.getItem("targetColourTheme")) {
+		if (localStorage.getItem("targetColourTheme") === "light") {
 			document.documentElement.classList.add("dark");
-			localStorage.setItem("color-theme", "dark");
+			localStorage.setItem("targetColourTheme", "dark");
 		} else {
 			document.documentElement.classList.remove("dark");
-			localStorage.setItem("color-theme", "light");
+			localStorage.setItem("targetColourTheme", "light");
 		}
 
 		// if NOT set via local storage previously
 	} else {
 		if (document.documentElement.classList.contains("dark")) {
 			document.documentElement.classList.remove("dark");
-			localStorage.setItem("color-theme", "light");
+			localStorage.setItem("targetColourTheme", "light");
 		} else {
 			document.documentElement.classList.add("dark");
-			localStorage.setItem("color-theme", "dark");
+			localStorage.setItem("targetColourTheme", "dark");
 		}
 	}
 

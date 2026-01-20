@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
-import { version_number } from "../src/lib/version_number.js";
+import { versionNumber } from "../src/lib/version_number.js";
 
-const tag = `v${version_number}`;
+const tag = `v${versionNumber}`;
 
 // Create tag
 execSync(`git tag ${tag}`);

@@ -6,11 +6,11 @@
         return await response.json()
     }
 
-    let email = '';
+    let personalEmailAddress = '';
 
     onMount(async () => {
         const data = await getEmail();
-        email = data.email;
+        personalEmailAddress = data.email;
 
     })
 
@@ -24,7 +24,7 @@
     </p>
 
     <p class="mb-4">
-        <strong>Email:</strong> {email}
+        <strong>Email:</strong> {personalEmailAddress}
     </p>
 
     <div class="mb-6">

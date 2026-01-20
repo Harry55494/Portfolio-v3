@@ -3,7 +3,7 @@
 
 	<script>
 		try {
-			const theme = localStorage.getItem('color-theme');
+			const theme = localStorage.getItem('targetColourTheme');
 			const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
 			if (isDark) {
 				document.documentElement.classList.add('dark');
@@ -26,6 +26,8 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="Harrison Phillingham's Personal Portfolio - Digital Forensics + More">
+		<link rel="canonical" href="https://harrison.phillingham.com" />
+		<meta name="robots" content="index, nofollow">
 		<title>Harrison Phillingham</title>
 		%sveltekit.head%
 	</head>
