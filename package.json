@@ -25,16 +25,12 @@
 		"svelte": "^5.47.1",
 		"svelte-sitemap": "^2.7.1",
 		"tailwindcss": "^4.1.18",
-		"vite": "7.1.11"
+		"vite": "6.4.1"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"esbuild"
-		],
-		"overrides": {
-			"cookie": ">=0.7.0",
-			"js-yaml": ">=4.1.0"
-		}
+		]
 	},
 	"dependencies": {
 		"cookie": "^1.1.1",
