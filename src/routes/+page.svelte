@@ -49,7 +49,7 @@
         <h3 class="text-2xl font-bold mt-8 sm:mt-12 mb-4 dark:text-gray-50">Quick Links</h3>
         <ul class="grid grid-cols-2 sm:flex sm:flex-col gap-1 list-disc list-inside dark:text-gray-100">
             {#each quickLinks as link}
-                <li><a class="underline text-blue-500" href={link.href}>{link.name}</a>{#if link.title} &nbsp; {link.title}{/if}</li>
+                <li><a class="underline " href={link.href}>{link.name}</a>{#if link.title} &nbsp; {link.title}{/if}</li>
             {/each}
         </ul>
 
@@ -61,7 +61,7 @@
 
         <ul class="grid grid-cols-2 sm:flex sm:flex-col gap-1 list-disc list-inside dark:text-gray-100">
             {#each projectLinks as link}
-                <li><a class="underline text-blue-500 " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
+                <li><a class="underline  " href={link.href}>{link.name} </a>{#if link.title} &nbsp; {link.title}{/if}</li>
             {/each}
         </ul>
     </div>

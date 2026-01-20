@@ -17,7 +17,7 @@
 <div class="m-auto dark:text-gray-50">
     <h1 class="text-3xl font-bold mt-5 mb-4 dark:text-gray-50">About</h1>
 
-    <p class="ml-0.5">Hey! My name's Harrison and I work in Digital Forensics for Thames Valley Police.</p>
+    <p class="ml-0.5">Hey! My name's Harrison and I'm a Software Security Engineer at <a class="underline text-blue-500" target="_blank" href="https://auroraer.com">Aurora Energy Research</a>.</p>
 
     <p class="mt-2 ml-0.5">I'm a big believer in self-hosting, privacy, the power of open-source, and the idea that no problem can't be fixed without enough time and if/else statements.</p>
 
@@ -25,7 +25,7 @@
 
     <ul class="flex flex-col gap-1 list-disc list-inside">
         {#each Object.entries(bodyChapterHeadings) as [heading, id]}
-            <li><a class="underline text-blue-500 " href={"#" + id}>{heading}</a></li>
+            <li><a class="underline " href={"#" + id}>{heading}</a></li>
         {/each}
     </ul>
 
@@ -33,11 +33,11 @@
 
     <h3 id="work" class="text-2xl font-bold mt-8 mb-4">Work</h3>
 
-    <p class="mt-2 ml-0.5">I currently work for Thames Valley Police in the Digital Forensics department.</p>
+    <p class="mt-2 ml-0.5">I currently work for Aurora Energy Research as a Software Security Engineer. I have previously worked for Thames Valley Police within their Digital Forensics Department.</p>
 
-    <p class="mt-2 ml-0.5">Outside of working for Thames Valley Police, I also work part-time for Daylight CPT, providing Microsoft 365 support, device management, and various other technical services.</p>
+    <p class="mt-2 ml-0.5">Outside of working for Aurora, I also work part-time for Daylight CPT, providing Microsoft 365 support, device management, and various other technical services.</p>
 
-    <p class="mt-2 ml-0.5">When not working, I'm usually programming (see my projects <a class="underline text-blue-500" href="/projects">here</a>) or tinkering with something (see below!).</p>
+    <p class="mt-2 ml-0.5">When not working, I'm usually programming (see my projects <a class="underline " href="/projects">here</a>) or tinkering with something (see below!).</p>
 
     <h3 id="homelab" class="text-2xl font-bold mt-8 mb-4">Homelab</h3>
 
